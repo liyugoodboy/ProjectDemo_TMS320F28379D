@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the SCI registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -54,15 +54,15 @@
 #define SCI_O_HBAUD               0x2U         // Baud rate (high) register
 #define SCI_O_LBAUD               0x3U         // Baud rate (low) register
 #define SCI_O_CTL2                0x4U         // Control register 2
-#define SCI_O_RXST                0x5U         // Recieve status register
-#define SCI_O_RXEMU               0x6U         // Recieve emulation buffer
+#define SCI_O_RXST                0x5U         // Receive status register
+#define SCI_O_RXEMU               0x6U         // Receive emulation buffer
                                                // register
-#define SCI_O_RXBUF               0x7U         // Recieve data buffer
+#define SCI_O_RXBUF               0x7U         // Receive data buffer
 #define SCI_O_TXBUF               0x9U         // Transmit data buffer
 #define SCI_O_FFTX                0xAU         // FIFO transmit register
-#define SCI_O_FFRX                0xBU         // FIFO recieve register
+#define SCI_O_FFRX                0xBU         // FIFO receive register
 #define SCI_O_FFCT                0xCU         // FIFO control register
-#define SCI_O_PRI                 0xFU         // SCI Priority control
+#define SCI_O_PRI                 0xFU         // SCI priority control
 
 //*****************************************************************************
 //
@@ -87,7 +87,8 @@
 #define SCI_CTL1_SLEEP            0x4U         // SCI sleep
 #define SCI_CTL1_TXWAKE           0x8U         // Transmitter wakeup method
 #define SCI_CTL1_SWRESET          0x20U        // Software reset
-#define SCI_CTL1_RXERRINTENA      0x40U        // Recieve __interrupt enable
+#define SCI_CTL1_RXERRINTENA      0x40U        // Receive error interrupt
+                                               // enable
 
 //*****************************************************************************
 //

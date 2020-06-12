@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the I2C registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -170,7 +170,8 @@
 #define I2C_ISRC_INTCODE_S        0U
 #define I2C_ISRC_INTCODE_M        0x7U         // Interrupt code bits.
 #define I2C_ISRC_WRITE_ZEROS_S    8U
-#define I2C_ISRC_WRITE_ZEROS_M    0xF00U       // Reserved
+#define I2C_ISRC_WRITE_ZEROS_M    0xF00U       // Always write all 0s to this
+                                               // field
 
 //*****************************************************************************
 //

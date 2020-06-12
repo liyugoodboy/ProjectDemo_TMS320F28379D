@@ -5,10 +5,10 @@
 // TITLE:  C28x CAN driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -53,6 +53,8 @@
 extern "C"
 {
 #endif
+
+#ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //
@@ -232,8 +234,8 @@ extern "C"
 
 //*****************************************************************************
 //
-//! This data type is used to identify the interrupt status register.  This is
-//! used when calling the CAN_setupMessageObject() function.
+//! This data type is used to decide between STD_ID or EXT_ID for a mailbox.
+//! This is used when calling the CAN_setupMessageObject() function.
 //
 //*****************************************************************************
 typedef enum
@@ -305,10 +307,13 @@ typedef enum
 //
 //*****************************************************************************
 #ifdef DEBUG
-static bool
+static inline bool
 CAN_isBaseValid(uint32_t base)
 {
-    return((base == CANA_BASE) || (base == CANB_BASE));
+	return(
+           (base == CANA_BASE) ||
+           (base == CANB_BASE)
+		  );
 }
 #endif
 
@@ -317,7 +322,7 @@ CAN_isBaseValid(uint32_t base)
 //
 //! \internal
 //!
-//! Copies data from a buffer to the CAN Data registers.
+//! Copies data from the CAN Data registers to a buffer.
 //!
 //! \param data is a pointer to the data to be written out to the CAN
 //! controller's data registers.
@@ -334,7 +339,7 @@ CAN_isBaseValid(uint32_t base)
 //! \return None.
 //
 //*****************************************************************************
-static void
+static inline void
 CAN_writeDataReg(const uint16_t *const data, uint32_t address,
                  uint32_t size)
 {
@@ -362,7 +367,7 @@ CAN_writeDataReg(const uint16_t *const data, uint32_t address,
 //
 //! \internal
 //!
-//! Copies data from a buffer to the CAN Data registers.
+//! Copies data from the CAN Data registers to a buffer.
 //!
 //! \param data is a pointer to the location to store the data read from the
 //! CAN controller's data registers.
@@ -379,7 +384,7 @@ CAN_writeDataReg(const uint16_t *const data, uint32_t address,
 //! \return None.
 //
 //*****************************************************************************
-static void
+static inline void
 CAN_readDataReg(uint16_t *data, const uint32_t address, uint32_t size)
 {
     uint32_t idx;
@@ -1530,6 +1535,11 @@ CAN_clearInterruptStatus(uint32_t base, uint32_t intClr);
 //!                                     structure and isn't the final message
 //!                                     object in FIFO
 //!
+//! If filtering is based on message identifier, the value
+//! \b CAN_MSG_OBJ_USE_ID_FILTER has to be logically ORed with the \e flag
+//! parameter and \b CAN_MSG_OBJ_USE_EXT_FILTER also has to be ORed for
+//! message identifier filtering to be based on the extended identifier.
+//!
 //! \note The \b msgLen Parameter for the Receive Message Object is a "don't
 //!       care" but its value should be between 0-8 due to the assert.
 //!
@@ -1592,6 +1602,27 @@ CAN_readMessage(uint32_t base, uint32_t objID,
 
 //*****************************************************************************
 //
+//! Transfers a CAN message between the IF registers and Message RAM.
+//!
+//! \param base is the base address of the CAN controller.
+//! \param interface is the interface to use for the transfer. Valid value are
+//!        1 or 2.
+//! \param objID is the object number to transfer (1-32).
+//! \param direction is the direction of data transfer. False is Message RAM 
+//!        to IF, True is IF to Message RAM.
+//!
+//! This function transfers the contents of the interface registers to message
+//! RAM or vice versa depending on the value passed to direction.
+//!
+//! \return None.
+//
+//*****************************************************************************
+extern void
+CAN_transferMessage(uint32_t base, uint16_t interface, uint32_t objID,
+                    bool direction);
+
+//*****************************************************************************
+//
 //! Clears a message object so that it is no longer used.
 //!
 //! \param base is the base address of the CAN controller.
@@ -1613,6 +1644,8 @@ CAN_clearMessage(uint32_t base, uint32_t objID);
 //! @}
 //
 //*****************************************************************************
+
+#endif // #ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //

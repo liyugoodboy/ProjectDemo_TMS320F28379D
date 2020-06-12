@@ -5,10 +5,10 @@
 // TITLE: C28x ECAP driver
 //
 //#############################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -61,9 +61,11 @@ extern "C"
 //
 //*****************************************************************************
 
-// ****************************************************************************
+//*****************************************************************************
+//
 // Includes
-// ****************************************************************************
+//
+//*****************************************************************************
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -210,9 +212,14 @@ typedef enum
 #ifdef DEBUG
 static inline bool ECAP_isBaseValid(uint32_t base)
 {
-    return((base == ECAP1_BASE) || (base == ECAP2_BASE) ||
-           (base == ECAP3_BASE) || (base == ECAP4_BASE) ||
-           (base == ECAP5_BASE) || (base == ECAP6_BASE));
+	return(
+           (base == ECAP1_BASE) ||
+           (base == ECAP2_BASE) ||
+           (base == ECAP3_BASE) ||
+           (base == ECAP4_BASE) ||
+           (base == ECAP5_BASE) ||
+           (base == ECAP6_BASE)
+	      );
 }
 #endif
 
@@ -1047,7 +1054,7 @@ static inline void ECAP_setAPWMShadowCompare(uint32_t base,
 //! \return Returns the time base counter value.
 //
 //*****************************************************************************
-static uint32_t ECAP_getTimeBaseCounter(uint32_t base)
+static inline uint32_t ECAP_getTimeBaseCounter(uint32_t base)
 {
     ASSERT(ECAP_isBaseValid(base));
 

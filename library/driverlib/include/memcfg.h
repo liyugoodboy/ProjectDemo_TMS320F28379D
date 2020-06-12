@@ -5,10 +5,10 @@
 // TITLE:  C28x RAM config driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -75,7 +75,9 @@ extern "C"
 // application code.
 //
 //*****************************************************************************
+//
 // Masks to decode memory section defines.
+//
 #define MEMCFG_SECT_TYPE_MASK   0xFF000000U
 #define MEMCFG_SECT_TYPE_D      0x00000000U
 #define MEMCFG_SECT_TYPE_LS     0x01000000U
@@ -87,10 +89,12 @@ extern "C"
                                  (uint32_t)MEMCFG_GSXACCPROT0_DMAWRPROT_GS0)
 #define MEMCFG_XTEST_M          MEMCFG_DXTEST_TEST_M0_M
 
+//
 // Used for access violation functions.
-#define MEMCFG_NMVIOL_MASK      0x00000FFFU
-#define MEMCFG_MVIOL_MASK       0x0000F000U
-#define MEMCFG_MVIOL_SHIFT      12U
+//
+#define MEMCFG_NMVIOL_MASK      0x0000FFFFU
+#define MEMCFG_MVIOL_MASK       0x000F0000U
+#define MEMCFG_MVIOL_SHIFT      16U
 
 #ifndef DOXYGEN_PDF_IGNORE
 //*****************************************************************************
@@ -101,14 +105,18 @@ extern "C"
 // as the memSection(s) or ramSection(s) parameter.
 //
 //*****************************************************************************
+//
 // DxRAM - Dedicated RAM config
+//
 #define MEMCFG_SECT_M0              0x00000001U //!< M0 RAM
 #define MEMCFG_SECT_M1              0x00000002U //!< M1 RAM
 #define MEMCFG_SECT_D0              0x00000004U //!< D0 RAM
 #define MEMCFG_SECT_D1              0x00000008U //!< D1 RAM
 #define MEMCFG_SECT_DX_ALL          0x0000000FU //!< All M and D RAM
 
+//
 // LSxRAM - Local shared RAM config
+//
 #define MEMCFG_SECT_LS0             0x01000001U //!< LS0 RAM
 #define MEMCFG_SECT_LS1             0x01000002U //!< LS1 RAM
 #define MEMCFG_SECT_LS2             0x01000004U //!< LS2 RAM
@@ -117,7 +125,9 @@ extern "C"
 #define MEMCFG_SECT_LS5             0x01000020U //!< LS5 RAM
 #define MEMCFG_SECT_LSX_ALL         0x0100003FU //!< All LS RAM
 
+//
 // GSxRAM - Global shared RAM config
+//
 #define MEMCFG_SECT_GS0             0x02000001U //!< GS0 RAM
 #define MEMCFG_SECT_GS1             0x02000002U //!< GS1 RAM
 #define MEMCFG_SECT_GS2             0x02000004U //!< GS2 RAM
@@ -136,13 +146,17 @@ extern "C"
 #define MEMCFG_SECT_GS15            0x02008000U //!< GS15 RAM
 #define MEMCFG_SECT_GSX_ALL         0x0200FFFFU //!< All GS RAM
 
+//
 // MSGxRAM - Message RAM config
+//
 #define MEMCFG_SECT_MSGCPUTOCPU     0x03000001U //!< CPU-to-CPU message RAM
 #define MEMCFG_SECT_MSGCPUTOCLA1    0x03000002U //!< CPU-to-CLA1 message RAM
 #define MEMCFG_SECT_MSGCLA1TOCPU    0x03000004U //!< CLA1-to-CPU message RAM
 #define MEMCFG_SECT_MSGX_ALL        0x03000007U //!< All message RAM
 
+//
 // All sections
+//
 #define MEMCFG_SECT_ALL             0xFFFFFFFFU //!< All configurable RAM
 
 //*****************************************************************************
@@ -177,9 +191,9 @@ extern "C"
 #define MEMCFG_NMVIOL_CLA1WRITE  0x00000020U //!< Non-master CLA1 write access
 #define MEMCFG_NMVIOL_CLA1FETCH  0x00000040U //!< Non-master CLA1 fetch access
 
-#define MEMCFG_MVIOL_CPUFETCH    0x00001000U //!< Master CPU fetch access
-#define MEMCFG_MVIOL_CPUWRITE    0x00002000U //!< Master CPU write access
-#define MEMCFG_MVIOL_DMAWRITE    0x00004000U //!< Master DMA write access
+#define MEMCFG_MVIOL_CPUFETCH    0x00010000U //!< Master CPU fetch access
+#define MEMCFG_MVIOL_CPUWRITE    0x00020000U //!< Master CPU write access
+#define MEMCFG_MVIOL_DMAWRITE    0x00040000U //!< Master DMA write access
 
 //*****************************************************************************
 //
@@ -309,12 +323,16 @@ MemCfg_setCLAMemType(uint32_t ramSections, MemCfg_CLAMemoryType claMemType)
 
     if(claMemType == MEMCFG_CLA_MEM_PROGRAM)
     {
+        //
         // Program memory
+        //
         HWREG(MEMCFG_BASE + MEMCFG_O_LSXCLAPGM) |= ramSections;
     }
     else
     {
+        //
         // Data memory
+        //
         HWREG(MEMCFG_BASE + MEMCFG_O_LSXCLAPGM) &= ~ramSections;
     }
 
@@ -337,7 +355,6 @@ MemCfg_setCLAMemType(uint32_t ramSections, MemCfg_CLAMemoryType claMemType)
 //!  - \b MEMCFG_MVIOL_CPUFETCH - Master CPU fetch access
 //!  - \b MEMCFG_MVIOL_CPUWRITE - Master CPU write access
 //!  - \b MEMCFG_MVIOL_DMAWRITE - Master DMA write access
-//!
 //! This function enables the indicated RAM access violation interrupt sources.
 //! Only the sources that are enabled can be reflected to the processor
 //! interrupt; disabled sources have no effect on the processor.
@@ -426,7 +443,6 @@ MemCfg_disableViolationInterrupt(uint32_t intFlags)
 //!  - \b MEMCFG_MVIOL_CPUFETCH - Master CPU fetch access
 //!  - \b MEMCFG_MVIOL_CPUWRITE - Master CPU write access
 //!  - \b MEMCFG_MVIOL_DMAWRITE - Master DMA write access
-//
 //*****************************************************************************
 static inline uint32_t
 MemCfg_getViolationInterruptStatus(void)
@@ -1086,7 +1102,6 @@ extern void
 MemCfg_setGSRAMMasterSel(uint32_t ramSections,
                          MemCfg_GSRAMMasterSel masterSel);
 
-
 //*****************************************************************************
 //
 //! Sets the test mode of the specified memory section.
@@ -1126,7 +1141,8 @@ MemCfg_setTestMode(uint32_t memSection, MemCfg_TestMode testMode);
 //!
 //! The \e ramSections parameter is an OR of one of the following sets of
 //! indicators:
-//! - \b MEMCFG_SECT_D0 and \b MEMCFG_SECT_D1 or \b MEMCFG_SECT_DX_ALL
+//! - \b MEMCFG_SECT_M0, \b MEMCFG_SECT_M1, \b MEMCFG_SECT_D0, and
+//!   \b MEMCFG_SECT_D1 or \b MEMCFG_SECT_DX_ALL
 //! - \b MEMCFG_SECT_LS0 through \b MEMCFG_SECT_LSx or \b MEMCFG_SECT_LSX_ALL
 //! - \b MEMCFG_SECT_GS0 through \b MEMCFG_SECT_GSx or \b MEMCFG_SECT_GSX_ALL
 //! - \b MEMCFG_SECT_MSGCPUTOCPU, \b MEMCFG_SECT_MSGCPUTOCLA1, and

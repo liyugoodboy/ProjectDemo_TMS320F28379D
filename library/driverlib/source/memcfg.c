@@ -5,10 +5,10 @@
 // TITLE:  C28x RAM config driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -82,7 +82,9 @@ MemCfg_lockConfig(uint32_t memSections)
             break;
 
         case MEMCFG_SECT_TYPE_MASK:
+            //
             // Lock configuration for all sections.
+            //
             HWREG(MEMCFG_BASE + MEMCFG_O_DXLOCK)   |= MEMCFG_SECT_NUM_MASK &
                                                       MEMCFG_SECT_DX_ALL;
             HWREG(MEMCFG_BASE + MEMCFG_O_LSXLOCK)  |= MEMCFG_SECT_NUM_MASK &
@@ -92,8 +94,10 @@ MemCfg_lockConfig(uint32_t memSections)
             break;
 
         default:
+            //
             // Do nothing. Invalid memSections. Make sure you aren't OR-ing
             // values for two different types of memory sections.
+            //
             break;
     }
 
@@ -141,7 +145,9 @@ MemCfg_unlockConfig(uint32_t memSections)
 
 
         case MEMCFG_SECT_TYPE_MASK:
+            //
             // Unlock configuration for all sections.
+            //
             HWREG(MEMCFG_BASE + MEMCFG_O_DXLOCK) &=
                 ~((uint32_t)(MEMCFG_SECT_NUM_MASK & MEMCFG_SECT_DX_ALL));
             HWREG(MEMCFG_BASE + MEMCFG_O_LSXLOCK) &=
@@ -151,8 +157,10 @@ MemCfg_unlockConfig(uint32_t memSections)
             break;
 
         default:
+            //
             // Do nothing. Invalid memSections. Make sure you aren't OR-ing
             // values for two different types of memory sections.
+            //
             break;
     }
 
@@ -200,7 +208,9 @@ MemCfg_commitConfig(uint32_t memSections)
 
 
         case MEMCFG_SECT_TYPE_MASK:
+            //
             // Commit configuration for all sections.
+            //
             HWREG(MEMCFG_BASE + MEMCFG_O_DXCOMMIT)   |= MEMCFG_SECT_NUM_MASK &
                                                         MEMCFG_SECT_DX_ALL;
             HWREG(MEMCFG_BASE + MEMCFG_O_LSXCOMMIT)  |= MEMCFG_SECT_NUM_MASK &
@@ -210,8 +220,10 @@ MemCfg_commitConfig(uint32_t memSections)
             break;
 
         default:
+            //
             // Do nothing. Invalid memSections. Make sure you aren't OR-ing
             // values for two different types of RAM.
+            //
             break;
     }
 
@@ -285,7 +297,9 @@ MemCfg_setProtection(uint32_t memSection, uint32_t protectMode)
 
 
         default:
+            //
             // Do nothing. Invalid memSection.
+            //
             break;
     }
 
@@ -435,7 +449,9 @@ MemCfg_setTestMode(uint32_t memSection, MemCfg_TestMode testMode)
             break;
 
         default:
+            //
             // Do nothing. Invalid memSection.
+            //
             break;
     }
 
@@ -488,7 +504,9 @@ MemCfg_initSections(uint32_t ramSections)
             break;
 
         case MEMCFG_SECT_TYPE_MASK:
+            //
             // Initialize all sections.
+            //
             HWREG(MEMCFG_BASE + MEMCFG_O_DXINIT)   |= MEMCFG_SECT_NUM_MASK &
                                                       MEMCFG_SECT_DX_ALL;
             HWREG(MEMCFG_BASE + MEMCFG_O_LSXINIT)  |= MEMCFG_SECT_NUM_MASK &
@@ -500,8 +518,10 @@ MemCfg_initSections(uint32_t ramSections)
             break;
 
         default:
+            //
             // Do nothing. Invalid ramSections. Make sure you aren't OR-ing
             // values for two different types of RAM.
+            //
             break;
     }
 
@@ -549,7 +569,9 @@ MemCfg_getInitStatus(uint32_t ramSections)
             break;
 
         case MEMCFG_SECT_TYPE_MASK:
+            //
             // Return the overall status.
+            //
             if((HWREG(MEMCFG_BASE + MEMCFG_O_DXINITDONE) ==
                 MEMCFG_SECT_DX_ALL) &&
                (HWREG(MEMCFG_BASE + MEMCFG_O_LSXINITDONE) ==
@@ -568,8 +590,10 @@ MemCfg_getInitStatus(uint32_t ramSections)
             break;
 
         default:
+            //
             // Invalid ramSections. Make sure you aren't OR-ing values for two
             // different types of RAM.
+            //
             status = 0U;
             break;
     }

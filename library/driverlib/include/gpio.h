@@ -5,10 +5,10 @@
 // TITLE:  C28x GPIO driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -372,6 +372,35 @@ GPIO_disableInterrupt(GPIO_ExternalIntNum extIntNum)
 
 //*****************************************************************************
 //
+//! Gets the value of the external interrupt counter.
+//!
+//! \param extIntNum specifies the external interrupt.
+//!
+//! The following defines can be used to specify the external interrupt for the
+//! \e extIntNum parameter:
+//!
+//! - \b GPIO_INT_XINT1
+//! - \b GPIO_INT_XINT2
+//! - \b GPIO_INT_XINT3
+//!
+//! \b Note: The counter is clocked at the SYSCLKOUT rate.
+//!
+//! \return Returns external interrupt counter value.
+//
+//*****************************************************************************
+static inline uint16_t
+GPIO_getInterruptCounter(GPIO_ExternalIntNum extIntNum)
+{
+    ASSERT(extIntNum <= GPIO_INT_XINT3);
+
+    //
+    // Read the counter value from the appropriate register.
+    //
+    return((HWREGH(XINT_BASE + XINT_O_1CTR + (uint16_t)extIntNum)));
+}
+
+//*****************************************************************************
+//
 //! Reads the value present on the specified pin.
 //!
 //! \param pin is the identifying GPIO number of the pin.
@@ -395,7 +424,7 @@ GPIO_readPin(uint32_t pin)
     //
     ASSERT(GPIO_isPinValid(pin));
 
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((pin / 32U) * GPIO_DATA_REGS_STEP);
 
     return((gpioDataReg[GPIO_GPxDAT_INDEX] >> (pin % 32U)) & (uint32_t)0x1U);
@@ -429,7 +458,7 @@ GPIO_writePin(uint32_t pin, uint32_t outVal)
     //
     ASSERT(GPIO_isPinValid(pin));
 
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((pin / 32U) * GPIO_DATA_REGS_STEP);
 
     pinMask = (uint32_t)1U << (pin % 32U);
@@ -469,7 +498,7 @@ GPIO_togglePin(uint32_t pin)
     //
     ASSERT(GPIO_isPinValid(pin));
 
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((pin / 32U) * GPIO_DATA_REGS_STEP);
 
     gpioDataReg[GPIO_GPxTOGGLE_INDEX] = (uint32_t)1U << (pin % 32U);
@@ -495,7 +524,7 @@ GPIO_readPortData(GPIO_Port port)
     //
     // Get the starting address of the port's registers and return DATA.
     //
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((uint32_t)port * GPIO_DATA_REGS_STEP);
 
     return(gpioDataReg[GPIO_GPxDAT_INDEX]);
@@ -529,7 +558,7 @@ GPIO_writePortData(GPIO_Port port, uint32_t outVal)
     //
     // Get the starting address of the port's registers and write to DATA.
     //
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((uint32_t)port * GPIO_DATA_REGS_STEP);
 
     gpioDataReg[GPIO_GPxDAT_INDEX] = outVal;
@@ -562,7 +591,7 @@ GPIO_setPortPins(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to SET.
     //
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((uint32_t)port * GPIO_DATA_REGS_STEP);
 
     gpioDataReg[GPIO_GPxSET_INDEX] = pinMask;
@@ -595,7 +624,7 @@ GPIO_clearPortPins(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to CLEAR.
     //
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((uint32_t)port * GPIO_DATA_REGS_STEP);
 
     gpioDataReg[GPIO_GPxCLEAR_INDEX] = pinMask;
@@ -628,7 +657,7 @@ GPIO_togglePortPins(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to TOGGLE.
     //
-    gpioDataReg = (uint32_t *)GPIODATA_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIODATA_BASE) +
                   ((uint32_t)port * GPIO_DATA_REGS_STEP);
 
     gpioDataReg[GPIO_GPxTOGGLE_INDEX] = pinMask;
@@ -665,7 +694,7 @@ GPIO_lockPortConfig(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to the lock.
     //
-    gpioDataReg = (uint32_t *)GPIOCTRL_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIOCTRL_BASE) +
                   ((uint32_t)port * GPIO_CTRL_REGS_STEP);
 
     EALLOW;
@@ -700,7 +729,7 @@ GPIO_unlockPortConfig(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to the lock.
     //
-    gpioDataReg = (uint32_t *)GPIOCTRL_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIOCTRL_BASE) +
                   ((uint32_t)port * GPIO_CTRL_REGS_STEP);
 
     EALLOW;
@@ -739,7 +768,7 @@ GPIO_commitPortConfig(GPIO_Port port, uint32_t pinMask)
     //
     // Get the starting address of the port's registers and write to the lock.
     //
-    gpioDataReg = (uint32_t *)GPIOCTRL_BASE +
+    gpioDataReg = (uint32_t *)((uintptr_t)GPIOCTRL_BASE) +
                   ((uint32_t)port * GPIO_CTRL_REGS_STEP);
 
     EALLOW;

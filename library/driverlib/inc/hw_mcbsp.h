@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the MCBSP registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -56,8 +56,10 @@
                                                // 31-16
 #define MCBSP_O_DXR1              0x3U         // Data transmit register bits
                                                // 15-0
-#define MCBSP_O_SPCR2             0x4U         // Control register 2
-#define MCBSP_O_SPCR1             0x5U         // Control register 1
+#define MCBSP_O_SPCR2             0x4U         // Serial port control register
+                                               // 2
+#define MCBSP_O_SPCR1             0x5U         // Serial port control register
+                                               // 1
 #define MCBSP_O_RCR2              0x6U         // Receive Control register 2
 #define MCBSP_O_RCR1              0x7U         // Receive Control register 1
 #define MCBSP_O_XCR2              0x8U         // Transmit Control register 2
@@ -66,8 +68,10 @@
                                                // register 2
 #define MCBSP_O_SRGR1             0xBU         // Sample rate generator
                                                // register 1
-#define MCBSP_O_MCR2              0xCU         // Multi-channel register 2
-#define MCBSP_O_MCR1              0xDU         // Multi-channel register 1
+#define MCBSP_O_MCR2              0xCU         // Multi-channel control
+                                               // register 2
+#define MCBSP_O_MCR1              0xDU         // Multi-channel control
+                                               // register 1
 #define MCBSP_O_RCERA             0xEU         // Receive channel enable
                                                // partition A
 #define MCBSP_O_RCERB             0xFU         // Receive channel enable

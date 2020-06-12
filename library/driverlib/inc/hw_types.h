@@ -5,10 +5,10 @@
 // TITLE:  Type definitions used in driverlib functions.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -49,11 +49,11 @@
 //
 //*****************************************************************************
 #define HWREG(x)                                                              \
-        (*((volatile uint32_t *)(x)))
+        (*((volatile uint32_t *)((uintptr_t)(x))))
 #define HWREG_BP(x)                                                           \
         __byte_peripheral_32((uint32_t *)(x))
 #define HWREGH(x)                                                             \
-        (*((volatile uint16_t *)(x)))
+        (*((volatile uint16_t *)((uintptr_t)(x))))
 #define HWREGB(x)                                                             \
         __byte((int16_t *)(x),0)
 
@@ -65,6 +65,14 @@
 #define STATUS_S_SUCCESS    (0)
 #define STATUS_E_FAILURE    (-1)
 
+//*****************************************************************************
+//
+// Definition of 8 bit types for USB Driver code to maintain portability
+// between byte and word addressable cores of C2000 Devices.
+//
+//*****************************************************************************
+typedef uint16_t uint8_t;
+//typedef int16_t int8_t;
 
 //****************************************************************************
 //
@@ -82,9 +90,41 @@
 //*****************************************************************************
 #ifndef C2000_IEEE754_TYPES
 #define C2000_IEEE754_TYPES
-typedef float               float32_t;
-typedef long double         float64_t;
+#ifdef __TI_EABI__
+typedef float         float32_t;
+typedef double        float64_t;
+#else // TI COFF
+typedef float         float32_t;
+typedef long double   float64_t;
+#endif // __TI_EABI__
 #endif // C2000_IEEE754_TYPES
+
+
+//*****************************************************************************
+//
+// Emulated Bitbanded write
+//
+//*****************************************************************************
+#define HWREGBITW(address, mask, value)                                       \
+        (*(volatile uint32_t *)(address)) =                                   \
+       ((*(volatile uint32_t *)(address)) & ~((uint32_t)1 << mask))           \
+       | ((uint32_t)value << mask)
+
+#define HWREGBITHW(address, mask, value)                                       \
+        (*(volatile uint16_t *)(address)) =                                    \
+       ((*(volatile uint16_t *)(address)) & ~((uint16_t)1 << mask))            \
+       | ((uint16_t)value << mask)
+
+//*****************************************************************************
+//
+// Emulated Bitbanded read
+//
+//*****************************************************************************
+#define HWREGBITR(address, mask)                                              \
+        (((*(volatile uint32_t *)(address)) & ((uint32_t)1 << mask)) >> mask)
+
+#define HWREGBITHR(address, mask)                                              \
+        (((*(volatile uint16_t *)(address)) & ((uint16_t)1 << mask)) >> mask)
 
 //*****************************************************************************
 //

@@ -5,10 +5,10 @@
 // TITLE:  API to return the version number of the driverlib.lib in use.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -64,7 +64,7 @@ extern "C"
 
 //! Version number to be returned by Version_getLibVersion()
 //!
-#define VERSION_NUMBER      2000002U
+#define VERSION_NUMBER      3010000U
 
 //*****************************************************************************
 //

@@ -5,10 +5,10 @@
 // TITLE:   C28x EPWM Driver
 //
 //#############################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -225,19 +225,18 @@ typedef enum
 //*****************************************************************************
 typedef enum
 {
-    EPWM_LINK_WITH_EPWM_1 = 0,   //!< link current ePWM with ePWM1
-    EPWM_LINK_WITH_EPWM_2 = 1,   //!< link current ePWM with ePWM2
-    EPWM_LINK_WITH_EPWM_3 = 2,   //!< link current ePWM with ePWM3
-    EPWM_LINK_WITH_EPWM_4 = 3,   //!< link current ePWM with ePWM4
-    EPWM_LINK_WITH_EPWM_5 = 4,   //!< link current ePWM with ePWM5
-    EPWM_LINK_WITH_EPWM_6 = 5,   //!< link current ePWM with ePWM6
-    EPWM_LINK_WITH_EPWM_7 = 6,   //!< link current ePWM with ePWM7
-    EPWM_LINK_WITH_EPWM_8 = 7,   //!< link current ePWM with ePWM8
-    EPWM_LINK_WITH_EPWM_9 = 8,   //!< link current ePWM with ePWM9
-    EPWM_LINK_WITH_EPWM_10 = 9,  //!< link current ePWM with ePWM10
-    EPWM_LINK_WITH_EPWM_11 = 10, //!< link current ePWM with ePWM11
-    EPWM_LINK_WITH_EPWM_12 = 11  //!< link current ePWM with ePWM12
-
+     EPWM_LINK_WITH_EPWM_1 = 0,   //!< link current ePWM with ePWM1
+     EPWM_LINK_WITH_EPWM_2 = 1,   //!< link current ePWM with ePWM2
+     EPWM_LINK_WITH_EPWM_3 = 2,   //!< link current ePWM with ePWM3
+     EPWM_LINK_WITH_EPWM_4 = 3,   //!< link current ePWM with ePWM4
+     EPWM_LINK_WITH_EPWM_5 = 4,   //!< link current ePWM with ePWM5
+     EPWM_LINK_WITH_EPWM_6 = 5,   //!< link current ePWM with ePWM6
+     EPWM_LINK_WITH_EPWM_7 = 6,   //!< link current ePWM with ePWM7
+     EPWM_LINK_WITH_EPWM_8 = 7,   //!< link current ePWM with ePWM8
+     EPWM_LINK_WITH_EPWM_9 = 8,   //!< link current ePWM with ePWM9
+     EPWM_LINK_WITH_EPWM_10 = 9,   //!< link current ePWM with ePWM10
+     EPWM_LINK_WITH_EPWM_11 = 10,   //!< link current ePWM with ePWM11
+     EPWM_LINK_WITH_EPWM_12 = 11    //!< link current ePWM with ePWM12
 } EPWM_CurrentLink;
 
 //*****************************************************************************
@@ -1448,20 +1447,6 @@ typedef enum
 
 //*****************************************************************************
 //
-//! Values that can be passed to EPWM_lockRegisters() as the \e registerGroup
-//! parameter.
-//
-//*****************************************************************************
-typedef enum
-{
-    EPWM_REGISTER_GROUP_GLOBAL_LOAD = 0x2,     //!< Global load register group
-    EPWM_REGISTER_GROUP_TRIP_ZONE = 0x4,       //!< Trip zone register group
-    EPWM_REGISTER_GROUP_TRIP_ZONE_CLEAR = 0x8, //!< Trip zone clear group
-    EPWM_REGISTER_GROUP_DIGITAL_COMPARE = 0x10 //!< Digital compare group
-} EPWM_LockRegisterGroup;
-
-//*****************************************************************************
-//
 // Prototypes for the API.
 //
 //*****************************************************************************
@@ -1482,12 +1467,20 @@ typedef enum
 #ifdef DEBUG
 static inline bool EPWM_isBaseValid(uint32_t base)
 {
-    return((base == EPWM1_BASE)  || (base == EPWM2_BASE)  ||
-           (base == EPWM3_BASE)  || (base == EPWM4_BASE)  ||
-           (base == EPWM5_BASE)  || (base == EPWM6_BASE)  ||
-           (base == EPWM7_BASE)  || (base == EPWM8_BASE)  ||
-           (base == EPWM9_BASE)  || (base == EPWM10_BASE) ||
-           (base == EPWM11_BASE) || (base == EPWM12_BASE));
+    return(
+           (base == EPWM1_BASE) ||
+           (base == EPWM2_BASE) ||
+           (base == EPWM3_BASE) ||
+           (base == EPWM4_BASE) ||
+           (base == EPWM5_BASE) ||
+           (base == EPWM6_BASE) ||
+           (base == EPWM7_BASE) ||
+           (base == EPWM8_BASE) ||
+           (base == EPWM9_BASE) ||
+           (base == EPWM10_BASE) ||
+           (base == EPWM11_BASE) ||
+           (base == EPWM12_BASE)
+          );
 }
 #endif
 
@@ -1697,6 +1690,7 @@ EPWM_setSyncOutPulseMode(uint32_t base, EPWM_SyncOutPulseMode mode)
                 (((uint16_t)mode & 0x3U) << EPWM_TBCTL2_SYNCOSELX_S));
     }
 }
+
 //*****************************************************************************
 //
 //! Set PWM period load mode.
@@ -2203,9 +2197,9 @@ EPWM_getTimeBasePeriod(uint32_t base)
 //!   - EPWM_LINK_WITH_EPWM_7  - link current ePWM with ePWM7
 //!   - EPWM_LINK_WITH_EPWM_8  - link current ePWM with ePWM8
 //!   - EPWM_LINK_WITH_EPWM_9  - link current ePWM with ePWM9
-//!   - EPWM_LINK_WITH_EPWM_10 - link current ePWM with ePWM10
-//!   - EPWM_LINK_WITH_EPWM_11 - link current ePWM with ePWM11
-//!   - EPWM_LINK_WITH_EPWM_12 - link current ePWM with ePWM12
+//!   - EPWM_LINK_WITH_EPWM_10  - link current ePWM with ePWM10
+//!   - EPWM_LINK_WITH_EPWM_11  - link current ePWM with ePWM11
+//!   - EPWM_LINK_WITH_EPWM_12  - link current ePWM with ePWM12
 //!
 //! Valid values for linkComp are:
 //!   - EPWM_LINK_TBPRD   - link TBPRD:TBPRDHR registers
@@ -2776,64 +2770,77 @@ EPWM_setActionQualifierAction(uint32_t base,
 //! \param action is the desired action when the specified event occurs
 //!
 //! This function sets up the Action Qualifier output on ePWMA or ePWMB,
-//! depending on the value of epwmOutput, to a value specified by action
+//! depending on the value of epwmOutput, to a value specified by action.
+//! Valid action param values from different time base counter scenarios
+//! should be OR'd together to configure complete action for a pwm output.
 //! The following are valid values for the parameters.
 //!   - epwmOutput
 //!       - EPWM_AQ_OUTPUT_A          - ePWMxA output
 //!       - EPWM_AQ_OUTPUT_B          - ePWMxB output
+//!
 //!   - action
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_ZERO     - Time base counter equals zero
+//!       - When time base counter equals zero
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_ZERO   - Time base counter equals zero
 //!                                             and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_ZERO           - Time base counter equals zero
+//!         - EPWM_AQ_OUTPUT_LOW_ZERO         - Time base counter equals zero
 //!                                             and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_ZERO          - Time base counter equals zero
+//!         - EPWM_AQ_OUTPUT_HIGH_ZERO        - Time base counter equals zero
 //!                                             and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_ZERO        - Time base counter equals zero
+//!         - EPWM_AQ_OUTPUT_TOGGLE_ZERO      - Time base counter equals zero
 //!                                             and toggle the output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_PERIOD   - Time base counter equals period
+//!       - When time base counter equals period
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_PERIOD - Time base counter equals period
 //!                                             and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_PERIOD         - Time base counter equals period
+//!         - EPWM_AQ_OUTPUT_LOW_PERIOD       - Time base counter equals period
 //!                                             and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_PERIOD        - Time base counter equals period
+//!         - EPWM_AQ_OUTPUT_HIGH_PERIOD      - Time base counter equals period
 //!                                             and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_PERIOD      - Time base counter equals period
+//!         - EPWM_AQ_OUTPUT_TOGGLE_PERIOD    - Time base counter equals period
 //!                                             and toggle the output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_UP_CMPA  - Time base counter up equals
-//!                                             COMPA and no change in the
-//!                                             output pins
-//!       - EPWM_AQ_OUTPUT_LOW_UP_CMPA        - Time base counter up equals
-//!                                             COMPA and set output pins low
-//!       - EPWM_AQ_OUTPUT_HIGH_UP_CMPA       - Time base counter up equals
-//!                                             COMPA and set output pins high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_UP_CMPA     - Time base counter up equals
-//!                                             COMPA and toggle output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_CMPA- Time base counter down equals
-//!                                             COMPA and no change in the
-//!                                             output pins
-//!       - EPWM_AQ_OUTPUT_LOW_DOWN_CMPA      - Time base counter down equals
-//!                                             COMPA and set output pins low
-//!       - EPWM_AQ_OUTPUT_HIGH_DOWN_CMPA     - Time base counter down equals
-//!                                             COMPA and set output pins high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_DOWN_CMPA   - Time base counter down equals
-//!                                             COMPA and toggle output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_UP_CMPB  - Time base counter up equals
-//!                                             COMPB and no change in the
-//!                                             output pins
-//!       - EPWM_AQ_OUTPUT_LOW_UP_CMPB        - Time base counter up equals
-//!                                             COMPB and set output pins low
-//!       - EPWM_AQ_OUTPUT_HIGH_UP_CMPB       - Time base counter up equals
-//!                                             COMPB and set output pins high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_UP_CMPB     - Time base counter up equals
-//!                                             COMPB and toggle output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_CMPB- Time base counter down equals
-//!                                             COMPB and no change in the
-//!                                             output pins
-//!       - EPWM_AQ_OUTPUT_LOW_DOWN_CMPB      - Time base counter down equals
-//!                                             COMPB and set output pins low
-//!       - EPWM_AQ_OUTPUT_HIGH_DOWN_CMPB     - Time base counter down equals
-//!                                             COMPB and set output pins high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_DOWN_CMPB   - Time base counter down equals
-//!                                             COMPB and toggle output pins
+//!       - When time base counter equals CMPA during up-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_UP_CMPA  - Time base counter up equals
+//!                                               COMPA and no change in the
+//!                                               output pins
+//!         - EPWM_AQ_OUTPUT_LOW_UP_CMPA        - Time base counter up equals
+//!                                               COMPA and set output pins low
+//!         - EPWM_AQ_OUTPUT_HIGH_UP_CMPA       - Time base counter up equals
+//!                                               COMPA and set output pins high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_UP_CMPA     - Time base counter up equals
+//!                                               COMPA and toggle output pins
+//!       - When time base counter equals CMPA during down-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_CMPA - Time base counter down equals
+//!                                                COMPA and no change in the
+//!                                                output pins
+//!         - EPWM_AQ_OUTPUT_LOW_DOWN_CMPA      - Time base counter down equals
+//!                                               COMPA and set output pins low
+//!         - EPWM_AQ_OUTPUT_HIGH_DOWN_CMPA     - Time base counter down equals
+//!                                               COMPA and set output pins high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_DOWN_CMPA   - Time base counter down equals
+//!                                               COMPA and toggle output pins
+//!       - When time base counter equals CMPB during up-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_UP_CMPB  - Time base counter up equals
+//!                                               COMPB and no change in the
+//!                                               output pins
+//!         - EPWM_AQ_OUTPUT_LOW_UP_CMPB        - Time base counter up equals
+//!                                               COMPB and set output pins low
+//!         - EPWM_AQ_OUTPUT_HIGH_UP_CMPB       - Time base counter up equals
+//!                                               COMPB and set output pins high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_UP_CMPB     - Time base counter up equals
+//!                                               COMPB and toggle output pins
+//!       - When time base counter equals CMPB during down-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_CMPB- Time base counter down equals
+//!                                               COMPB and no change in the
+//!                                               output pins
+//!         - EPWM_AQ_OUTPUT_LOW_DOWN_CMPB      - Time base counter down equals
+//!                                               COMPB and set output pins low
+//!         - EPWM_AQ_OUTPUT_HIGH_DOWN_CMPB     - Time base counter down equals
+//!                                               COMPB and set output pins high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_DOWN_CMPB   - Time base counter down equals
+//!                                               COMPB and toggle output pins
+//!
+//! \b note:  A logical OR of the valid values should be passed as the action
+//!           parameter. Single action should be configured for each time base
+//!           counter scenario.
 //!
 //! \return None.
 //
@@ -2841,7 +2848,7 @@ EPWM_setActionQualifierAction(uint32_t base,
 static inline void
 EPWM_setActionQualifierActionComplete(uint32_t base,
                                    EPWM_ActionQualifierOutputModule epwmOutput,
-                                   EPWM_ActionQualifierEventAction action)
+                                   uint16_t action)
 {
     uint32_t registerOffset;
 
@@ -2870,44 +2877,54 @@ EPWM_setActionQualifierActionComplete(uint32_t base,
 //! \param action is the desired action when the specified event occurs
 //!
 //! This function sets up the Additional Action Qualifier output on ePWMA or
-//! ePWMB depending on the value of epwmOutput, to a value specified by action
+//! ePWMB depending on the value of epwmOutput, to a value specified by action.
+//! Valid action param values from different event scenarios should be OR'd
+//! together to configure complete action for a pwm output.
 //! The following are valid values for the parameters.
 //!   - epwmOutput
 //!       - EPWM_AQ_OUTPUT_A          - ePWMxA output
 //!       - EPWM_AQ_OUTPUT_B          - ePWMxB output
 //!   - action
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_UP_TI  - T1 event on count up
-//!                                           and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_UP_TI        - T1 event on count up
+//!       - When T1 event occurs during up-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_UP_T1  - T1 event on count up
+//!                                             and no change in output pins
+//!         - EPWM_AQ_OUTPUT_LOW_UP_T1        - T1 event on count up
 //!                                           and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_UP_TI       - T1 event on count up
+//!         - EPWM_AQ_OUTPUT_HIGH_UP_T1       - T1 event on count up
 //!                                           and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_UP_TI     - T1 event on count up
+//!         - EPWM_AQ_OUTPUT_TOGGLE_UP_T1     - T1 event on count up
 //!                                           and toggle the output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_TI- T1 event on count down
+//!       - When T1 event occurs during down-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_T1- T1 event on count down
 //!                                           and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_DOWN_TI      - T1 event on count down
+//!         - EPWM_AQ_OUTPUT_LOW_DOWN_T1      - T1 event on count down
 //!                                           and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_DOWN_TI     - T1 event on count down
+//!         - EPWM_AQ_OUTPUT_HIGH_DOWN_T1     - T1 event on count down
 //!                                           and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_DOWN_TI   - T1 event on count down
+//!         - EPWM_AQ_OUTPUT_TOGGLE_DOWN_T1   - T1 event on count down
 //!                                           and toggle the output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_UP_T2  - T2 event on count up
-//!                                           and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_UP_T2        - T2 event on count up
-//!                                           and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_UP_T2       - T2 event on count up
-//!                                           and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_UP_T2     - T2 event on count up
-//!                                           and toggle the output pins
-//!       - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_T2- T2 event on count down
-//!                                           and no change in output pins
-//!       - EPWM_AQ_OUTPUT_LOW_DOWN_T2      - T2 event on count down
-//!                                           and set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH_DOWN_T2     - T2 event on count down
-//!                                           and set output pins to high
-//!       - EPWM_AQ_OUTPUT_TOGGLE_DOWN_T2   - T2 event on count down
-//!                                           and toggle the output pins
+//!       - When T2 event occurs during up-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_UP_T2  - T2 event on count up
+//!                                             and no change in output pins
+//!         - EPWM_AQ_OUTPUT_LOW_UP_T2        - T2 event on count up
+//!                                             and set output pins to low
+//!         - EPWM_AQ_OUTPUT_HIGH_UP_T2       - T2 event on count up
+//!                                             and set output pins to high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_UP_T2     - T2 event on count up
+//!                                             and toggle the output pins
+//!       - When T2 event occurs during down-count
+//!         - EPWM_AQ_OUTPUT_NO_CHANGE_DOWN_T2 - T2 event on count down
+//!                                              and no change in output pins
+//!         - EPWM_AQ_OUTPUT_LOW_DOWN_T2       - T2 event on count down
+//!                                              and set output pins to low
+//!         - EPWM_AQ_OUTPUT_HIGH_DOWN_T2      - T2 event on count down
+//!                                              and set output pins to high
+//!         - EPWM_AQ_OUTPUT_TOGGLE_DOWN_T2    - T2 event on count down
+//!                                              and toggle the output pins
+//!
+//! \b note:  A logical OR of the valid values should be passed as the action
+//!           parameter. Single action should be configured for each event
+//!           scenario.
 //!
 //! \return None.
 //
@@ -2915,7 +2932,7 @@ EPWM_setActionQualifierActionComplete(uint32_t base,
 static inline void
 EPWM_setAdditionalActionQualifierActionComplete(uint32_t base,
                                EPWM_ActionQualifierOutputModule epwmOutput,
-                               EPWM_AdditionalActionQualifierEventAction action)
+                               uint16_t action)
 {
     uint32_t registerTOffset;
 
@@ -2991,8 +3008,8 @@ EPWM_setActionQualifierContSWForceShadowMode(uint32_t base,
 //!       - EPWM_AQ_OUTPUT_B          - ePWMxB output
 //!   - output
 //!       - EPWM_AQ_SW_DISABLED       - Software forcing disabled.
-//!       - EPWM_AQ_OUTPUT_LOW        - Set output pins to low
-//!       - EPWM_AQ_OUTPUT_HIGH       - Set output pins to High
+//!       - EPWM_AQ_SW_OUTPUT_LOW     - Set output pins to low
+//!       - EPWM_AQ_SW_OUTPUT_HIGH    - Set output pins to High
 //!
 //! \return None.
 //

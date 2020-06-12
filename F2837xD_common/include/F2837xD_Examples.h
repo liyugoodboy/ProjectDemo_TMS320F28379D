@@ -294,7 +294,7 @@ extern "C" {
 // The following pointer to a function call calibrates the ADC reference,
 // DAC offset, and internal oscillators
 //
-#define Device_cal (void   (*)(void))0x070282
+//#define Device_cal (void   (*)(void))0x070282
 
 //
 // The following pointers to functions calibrate the ADC linearity.  Use this

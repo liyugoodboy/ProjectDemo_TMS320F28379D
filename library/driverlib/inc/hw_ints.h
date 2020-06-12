@@ -5,8 +5,8 @@
 // TITLE:  Definitions of interrupt numbers for use with interrupt.c.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 //###########################################################################
 
 #ifndef HW_INTS_H

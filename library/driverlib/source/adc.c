@@ -5,10 +5,10 @@
 // TITLE:  C28x ADC driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -201,8 +201,15 @@ ADC_setMode(uint32_t base, ADC_Resolution resolution,
 
     //
     // Also apply the offset trim and, if needed, linearity trim correction.
+    // Offset Trim is not updated here in case of TMX or untrimmed devices.
+    // The default trims for TMX devices should be handled in Device_init().
+    // Refer to Device_init() and Device_configureTMXAnalogTrim() APIs for
+    // more details.
     //
-    HWREGH(base + ADC_O_OFFTRIM) = offsetTrim;
+    if(offsetTrim > 0x0U)
+    {
+        HWREGH(base + ADC_O_OFFTRIM) = offsetTrim;
+    }
     if(resolution == ADC_RESOLUTION_12BIT)
     {
         //

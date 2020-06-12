@@ -5,10 +5,10 @@
 // TITLE:  C28x ADC driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -116,6 +116,29 @@ extern "C"
 #define ADC_EVT_TRIPLO          0x0002U //!< Trip Low Event
 #define ADC_EVT_ZERO            0x0004U //!< Zero Crossing Event
 #endif
+
+//*****************************************************************************
+//
+// Values that can be passed to ADC_forceMultipleSOC() as socMask parameter.
+// These values can be OR'd together to trigger multiple SOCs at a time.
+//
+//*****************************************************************************
+#define ADC_FORCE_SOC0         0x0001U //!< SW trigger ADC SOC 0
+#define ADC_FORCE_SOC1         0x0002U //!< SW trigger ADC SOC 1
+#define ADC_FORCE_SOC2         0x0004U //!< SW trigger ADC SOC 2
+#define ADC_FORCE_SOC3         0x0008U //!< SW trigger ADC SOC 3
+#define ADC_FORCE_SOC4         0x0010U //!< SW trigger ADC SOC 4
+#define ADC_FORCE_SOC5         0x0020U //!< SW trigger ADC SOC 5
+#define ADC_FORCE_SOC6         0x0040U //!< SW trigger ADC SOC 6
+#define ADC_FORCE_SOC7         0x0080U //!< SW trigger ADC SOC 7
+#define ADC_FORCE_SOC8         0x0100U //!< SW trigger ADC SOC 8
+#define ADC_FORCE_SOC9         0x0200U //!< SW trigger ADC SOC 9
+#define ADC_FORCE_SOC10        0x0400U //!< SW trigger ADC SOC 10
+#define ADC_FORCE_SOC11        0x0800U //!< SW trigger ADC SOC 11
+#define ADC_FORCE_SOC12        0x1000U //!< SW trigger ADC SOC 12
+#define ADC_FORCE_SOC13        0x2000U //!< SW trigger ADC SOC 13
+#define ADC_FORCE_SOC14        0x4000U //!< SW trigger ADC SOC 14
+#define ADC_FORCE_SOC15        0x8000U //!< SW trigger ADC SOC 15
 
 //*****************************************************************************
 //
@@ -392,7 +415,8 @@ ADC_isBaseValid(uint32_t base)
 //! This function configures the ADC module's ADCCLK.
 //!
 //! The \e clkPrescale parameter specifies the value by which the input clock
-//! is divided to make the ADCCLK.  The value can be specified with the value
+//! is divided to make the ADCCLK.  The clkPrescale value can be specified with
+//! any of the following enum values:
 //! \b ADC_CLK_DIV_1_0, \b ADC_CLK_DIV_2_0, \b ADC_CLK_DIV_2_5, ...,
 //! \b ADC_CLK_DIV_7_5, \b ADC_CLK_DIV_8_0, or \b ADC_CLK_DIV_8_5.
 //!
@@ -653,7 +677,42 @@ ADC_forceSOC(uint32_t base, ADC_SOCNumber socNumber)
     //
     // Write to the register that will force a 1 to the corresponding SOC flag
     //
-    HWREGH(base + ADC_O_SOCFRC1) |= (1U << (uint16_t)socNumber);
+    HWREGH(base + ADC_O_SOCFRC1) = (1U << (uint16_t)socNumber);
+}
+
+//*****************************************************************************
+//
+//! Forces multiple SOC flags to 1 in the analog-to-digital converter.
+//!
+//! \param base is the base address of the ADC module.
+//! \param socMask is the SOCs to be forced through software
+//!
+//! This function forces the SOCFRC1 flags associated with the SOCs specified
+//! by \e socMask. This initiates a conversion once the desired SOCs are given
+//! priority. This software trigger can be used whether or not the SOC has been
+//! configured to accept some other specific trigger.
+//! Valid values for \e socMask parameter can be any of the individual
+//! ADC_FORCE_SOCx values or any of their OR'd combination to trigger multiple
+//! SOCs.
+//!
+//! \note To trigger SOC0, SOC1 and SOC2, value (ADC_FORCE_SOC0 |
+//! ADC_FORCE_SOC1 | ADC_FORCE_SOC2) should be passed as socMask.
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+ADC_forceMultipleSOC(uint32_t base, uint16_t socMask)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(ADC_isBaseValid(base));
+
+    //
+    // Write to the register that will force a 1 to desired SOCs
+    //
+    HWREGH(base + ADC_O_SOCFRC1) = socMask;
 }
 
 //*****************************************************************************
@@ -1279,7 +1338,8 @@ ADC_readPPBResult(uint32_t resultBase, ADC_PPBNumber ppbNumber)
     //
     // Return the result of selected PPB.
     //
-    return((int32_t)HWREG(resultBase + ADC_PPBxRESULT_OFFSET_BASE + ppbNumber));
+    return((int32_t)HWREG(resultBase + ADC_PPBxRESULT_OFFSET_BASE +
+           (ppbNumber * 2U)));
 }
 
 //*****************************************************************************

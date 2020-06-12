@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the ASYSCTL registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -95,6 +95,14 @@
 //
 //*****************************************************************************
 #define ASYSCTL_LOCK_TSNSCTL      0x8U         // Temperature Sensor Control
+                                               // Register Lock
+#define ASYSCTL_LOCK_ANAREFTRIMA  0x800000U    // Analog Reference A Trim
+                                               // Register Lock
+#define ASYSCTL_LOCK_ANAREFTRIMB  0x1000000U   // Analog Reference B Trim
+                                               // Register Lock
+#define ASYSCTL_LOCK_ANAREFTRIMC  0x2000000U   // Analog Reference C Trim
+                                               // Register Lock
+#define ASYSCTL_LOCK_ANAREFTRIMD  0x4000000U   // Analog Reference D Trim
                                                // Register Lock
 
 //*****************************************************************************

@@ -5,10 +5,10 @@
 // TITLE:   C28x SDFM Driver
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -273,9 +273,13 @@ typedef enum
 //
 //*****************************************************************************
 #ifdef DEBUG
-static inline bool SDFM_isBaseValid(uint32_t base)
+static inline bool
+SDFM_isBaseValid(uint32_t base)
 {
-    return((base == SDFM1_BASE) || (base == SDFM2_BASE));
+	return(
+           (base == SDFM1_BASE) ||
+           (base == SDFM2_BASE)
+		  );
 }
 #endif
 
@@ -292,8 +296,8 @@ static inline bool SDFM_isBaseValid(uint32_t base)
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_enableExternalReset(uint32_t base,
-                                            SDFM_FilterNumber filterNumber)
+static inline void
+SDFM_enableExternalReset(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -318,8 +322,8 @@ static inline void SDFM_enableExternalReset(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_disableExternalReset(uint32_t base,
-                                             SDFM_FilterNumber filterNumber)
+static inline void
+SDFM_disableExternalReset(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -344,8 +348,8 @@ static inline void SDFM_disableExternalReset(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_enableFilter(uint32_t base,
-                                     SDFM_FilterNumber filterNumber)
+static inline void
+SDFM_enableFilter(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -370,8 +374,8 @@ static inline void SDFM_enableFilter(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_disableFilter(uint32_t base,
-                                      SDFM_FilterNumber filterNumber)
+static inline void
+SDFM_disableFilter(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -397,9 +401,9 @@ static inline void SDFM_disableFilter(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_setFilterType(uint32_t base,
-                                      SDFM_FilterNumber filterNumber,
-                                      SDFM_FilterType filterType)
+static inline void
+SDFM_setFilterType(uint32_t base, SDFM_FilterNumber filterNumber,
+                   SDFM_FilterType filterType)
 {
     uint32_t address;
 
@@ -431,9 +435,9 @@ static inline void SDFM_setFilterType(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_setFilterOverSamplingRatio(uint32_t base,
-                                              SDFM_FilterNumber filterNumber,
-                                              uint16_t overSamplingRatio)
+static inline void
+SDFM_setFilterOverSamplingRatio(uint32_t base, SDFM_FilterNumber filterNumber,
+                                uint16_t overSamplingRatio)
 {
     uint32_t address;
 
@@ -462,11 +466,12 @@ static inline void SDFM_setFilterOverSamplingRatio(uint32_t base,
 //! This function sets the modulator clock mode specified by clockMode
 //! for the filter specified by filterNumber.
 //!
+//!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_setupModulatorClock(uint32_t base,
-                                            SDFM_FilterNumber filterNumber,
-                                            SDFM_ModulatorClockMode clockMode)
+static inline void
+SDFM_setupModulatorClock(uint32_t base, SDFM_FilterNumber filterNumber,
+                         SDFM_ModulatorClockMode clockMode)
 {
     uint32_t address;
 
@@ -480,6 +485,7 @@ static inline void SDFM_setupModulatorClock(uint32_t base,
     EALLOW;
     HWREGH(address) = (HWREGH(address) & (~SDFM_SDCTLPARM1_MOD_M)) |
                       (uint16_t)clockMode;
+
     EDIS;
 }
 
@@ -497,9 +503,9 @@ static inline void SDFM_setupModulatorClock(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_setOutputDataFormat(uint32_t base,
-                                            SDFM_FilterNumber filterNumber,
-                                            SDFM_OutputDataFormat dataFormat)
+static inline void
+SDFM_setOutputDataFormat(uint32_t base, SDFM_FilterNumber filterNumber,
+                         SDFM_OutputDataFormat dataFormat)
 {
     uint32_t address;
 
@@ -532,9 +538,9 @@ static inline void SDFM_setOutputDataFormat(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_setDataShiftValue(uint32_t base,
-                                          SDFM_FilterNumber filterNumber,
-                                          uint16_t shiftValue)
+static inline void
+SDFM_setDataShiftValue(uint32_t base, SDFM_FilterNumber filterNumber,
+                       uint16_t shiftValue)
 {
     uint32_t address;
 
@@ -568,9 +574,9 @@ static inline void SDFM_setDataShiftValue(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_setCompFilterHighThreshold(uint32_t base,
-                                     SDFM_FilterNumber filterNumber,
-                                     uint16_t highThreshold)
+static inline void
+SDFM_setCompFilterHighThreshold(uint32_t base, SDFM_FilterNumber filterNumber,
+                                uint16_t highThreshold)
 {
     uint32_t address;
 
@@ -603,9 +609,9 @@ static inline void SDFM_setCompFilterHighThreshold(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_setCompFilterLowThreshold(uint32_t base,
-                                              SDFM_FilterNumber filterNumber,
-                                              uint16_t lowThreshold)
+static inline void
+SDFM_setCompFilterLowThreshold(uint32_t base, SDFM_FilterNumber filterNumber,
+                               uint16_t lowThreshold)
 {
     uint32_t address;
 
@@ -640,9 +646,9 @@ static inline void SDFM_setCompFilterLowThreshold(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_enableInterrupt(uint32_t base,
-                                        SDFM_FilterNumber filterNumber,
-                                        uint16_t intFlags)
+static inline void
+SDFM_enableInterrupt(uint32_t base, SDFM_FilterNumber filterNumber,
+                     uint16_t intFlags)
 {
     uint16_t offset;
 
@@ -696,9 +702,9 @@ static inline void SDFM_enableInterrupt(uint32_t base,
 //! \return None.
 //
 //*****************************************************************************
-static inline void SDFM_disableInterrupt(uint32_t base,
-                                         SDFM_FilterNumber filterNumber,
-                                         uint16_t intFlags)
+static inline void
+SDFM_disableInterrupt(uint32_t base, SDFM_FilterNumber filterNumber,
+                      uint16_t intFlags)
 {
     uint16_t offset;
 
@@ -748,9 +754,9 @@ static inline void SDFM_disableInterrupt(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_setComparatorFilterType(uint32_t base,
-                                                SDFM_FilterNumber filterNumber,
-                                                SDFM_FilterType filterType)
+static inline void
+SDFM_setComparatorFilterType(uint32_t base, SDFM_FilterNumber filterNumber,
+                             SDFM_FilterType filterType)
 {
     uint32_t address;
 
@@ -782,9 +788,10 @@ static inline void SDFM_setComparatorFilterType(uint32_t base,
 //!
 //! \return None.
 //*****************************************************************************
-static inline void SDFM_setCompFilterOverSamplingRatio(uint32_t base,
-                                               SDFM_FilterNumber filterNumber,
-                                               uint16_t overSamplingRatio)
+static inline void
+SDFM_setCompFilterOverSamplingRatio(uint32_t base,
+                                    SDFM_FilterNumber filterNumber,
+                                    uint16_t overSamplingRatio)
 {
     uint32_t address;
 
@@ -815,8 +822,8 @@ static inline void SDFM_setCompFilterOverSamplingRatio(uint32_t base,
 //!
 //! \return Returns the latest data filter output.
 //*****************************************************************************
-static inline uint32_t SDFM_getFilterData(uint32_t base,
-                                          SDFM_FilterNumber filterNumber)
+static inline uint32_t
+SDFM_getFilterData(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -845,8 +852,8 @@ static inline uint32_t SDFM_getFilterData(uint32_t base,
 //!                                   threshold.
 //!
 //*****************************************************************************
-static inline SDFM_OutputThresholdStatus SDFM_getThresholdStatus(uint32_t base,
-                                               SDFM_FilterNumber filterNumber)
+static inline SDFM_OutputThresholdStatus
+SDFM_getThresholdStatus(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -870,8 +877,8 @@ static inline SDFM_OutputThresholdStatus SDFM_getThresholdStatus(uint32_t base,
 //!         Returns false if the Modulator has failed
 //!
 //*****************************************************************************
-static inline bool SDFM_getModulatorStatus(uint32_t base,
-                                           SDFM_FilterNumber filterNumber)
+static inline bool
+SDFM_getModulatorStatus(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -895,8 +902,8 @@ static inline bool SDFM_getModulatorStatus(uint32_t base,
 //!         Returns \b false if no new filter data is available
 //!
 //*****************************************************************************
-static inline bool SDFM_getNewFilterDataStatus(uint32_t base,
-                                               SDFM_FilterNumber filterNumber)
+static inline bool
+SDFM_getNewFilterDataStatus(uint32_t base, SDFM_FilterNumber filterNumber)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -919,7 +926,8 @@ static inline bool SDFM_getNewFilterDataStatus(uint32_t base,
 //!         Returns \b false if no interrupt is pending.
 //!
 //*****************************************************************************
-static inline bool SDFM_getIsrStatus(uint32_t base)
+static inline bool
+SDFM_getIsrStatus(uint32_t base)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -952,7 +960,8 @@ static inline bool SDFM_getIsrStatus(uint32_t base)
 //! \return None
 //!
 //*****************************************************************************
-static inline void SDFM_clearInterruptFlag(uint32_t base, uint32_t flag)
+static inline void
+SDFM_clearInterruptFlag(uint32_t base, uint32_t flag)
 {
     ASSERT(SDFM_isBaseValid(base));
     ASSERT((flag & 0x8000FFFFU) == flag);
@@ -974,7 +983,8 @@ static inline void SDFM_clearInterruptFlag(uint32_t base, uint32_t flag)
 //! \return None
 //!
 //*****************************************************************************
-static inline void SDFM_enableMasterInterrupt(uint32_t base)
+static inline void
+SDFM_enableMasterInterrupt(uint32_t base)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -997,7 +1007,8 @@ static inline void SDFM_enableMasterInterrupt(uint32_t base)
 //! \return None
 //!
 //*****************************************************************************
-static inline void SDFM_disableMasterInterrupt(uint32_t base)
+static inline void
+SDFM_disableMasterInterrupt(uint32_t base)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -1020,7 +1031,8 @@ static inline void SDFM_disableMasterInterrupt(uint32_t base)
 //! \return None
 //!
 //*****************************************************************************
-static inline void SDFM_enableMasterFilter(uint32_t base)
+static inline void
+SDFM_enableMasterFilter(uint32_t base)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -1043,7 +1055,8 @@ static inline void SDFM_enableMasterFilter(uint32_t base)
 //! \return None
 //!
 //*****************************************************************************
-static inline void SDFM_disableMasterFilter(uint32_t base)
+static inline void
+SDFM_disableMasterFilter(uint32_t base)
 {
     ASSERT(SDFM_isBaseValid(base));
 
@@ -1097,8 +1110,8 @@ static inline void SDFM_disableMasterFilter(uint32_t base)
 //! \return None.
 //!
 //*****************************************************************************
-extern void SDFM_configComparator(uint32_t base, uint16_t config1,
-                                  uint32_t config2);
+extern void
+SDFM_configComparator(uint32_t base, uint16_t config1, uint32_t config2);
 
 //*****************************************************************************
 //
@@ -1144,8 +1157,8 @@ extern void SDFM_configComparator(uint32_t base, uint16_t config1,
 //! \return None.
 //!
 //*****************************************************************************
-extern void SDFM_configDataFilter(uint32_t base, uint16_t config1,
-                                  uint16_t config2);
+extern void
+SDFM_configDataFilter(uint32_t base, uint16_t config1, uint16_t config2);
 
 //*****************************************************************************
 //

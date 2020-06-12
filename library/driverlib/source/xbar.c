@@ -5,10 +5,10 @@
 // TITLE:  C28x X-BAR driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -120,6 +120,48 @@ XBAR_setEPWMMuxConfig(XBAR_TripNum trip, XBAR_EPWMMuxConfig muxConfig)
 
     HWREG(XBAR_EPWM_CFG_REG_BASE + offset) =
         (HWREG(XBAR_EPWM_CFG_REG_BASE + offset) & ~((uint32_t)0x3U << shift)) |
+        (((uint32_t)muxConfig & 0x3U) << shift);
+
+    EDIS;
+}
+
+//*****************************************************************************
+//
+// XBAR_setCLBMuxConfig
+//
+//*****************************************************************************
+void
+XBAR_setCLBMuxConfig(XBAR_AuxSigNum auxSignal, XBAR_CLBMuxConfig muxConfig)
+{
+    uint32_t shift;
+    uint16_t offset;
+
+    //
+    // If the configuration is for MUX16-31, we'll need an odd value to index
+    // into the config registers.
+    //
+    if(((uint32_t)muxConfig & 0x2000U) != 0U)
+    {
+        offset = ((uint16_t)auxSignal << 1U) + 2U;
+    }
+    else
+    {
+        offset = (uint16_t)auxSignal << 1U;
+    }
+
+    //
+    // Extract the shift from the input value.
+    //
+    shift = ((uint32_t)muxConfig >> 8U) & 0x7FU;
+
+    //
+    // Write the requested muxing value for this XBAR auxSignal.
+    //
+    EALLOW;
+
+
+    HWREG(XBAR_CLB_CFG_REG_BASE + offset) =
+        (HWREG(XBAR_CLB_CFG_REG_BASE + offset) & ~((uint32_t)0x3U << shift)) |
         (((uint32_t)muxConfig & 0x3U) << shift);
 
     EDIS;

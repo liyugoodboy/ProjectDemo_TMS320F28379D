@@ -5,10 +5,10 @@
 // TITLE:  C28x CMPSS driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -59,14 +59,14 @@ CMPSS_configFilterHigh(uint32_t base, uint16_t samplePrescale,
     ASSERT(CMPSS_isBaseValid(base));
     ASSERT(samplePrescale < 1024U);
     ASSERT((sampleWindow >= 1U) && (sampleWindow <= 32U));
-    ASSERT(threshold >= ((sampleWindow - 1U) / 2U));
+    ASSERT((threshold - 1U) >= ((sampleWindow - 1U) / 2U));
 
     //
     // Shift the sample window and threshold values into the correct positions
     // and write them to the appropriate register.
     //
     regValue = ((sampleWindow - 1U) << CMPSS_CTRIPHFILCTL_SAMPWIN_S) |
-               (threshold << CMPSS_CTRIPHFILCTL_THRESH_S);
+               ((threshold - 1U) << CMPSS_CTRIPHFILCTL_THRESH_S);
 
     EALLOW;
 
@@ -100,14 +100,14 @@ CMPSS_configFilterLow(uint32_t base, uint16_t samplePrescale,
     ASSERT(CMPSS_isBaseValid(base));
     ASSERT(samplePrescale < 1024U);
     ASSERT((sampleWindow >= 1U) && (sampleWindow <= 32U));
-    ASSERT(threshold >= ((sampleWindow - 1U) / 2U));
+    ASSERT((threshold - 1U) >= ((sampleWindow - 1U) / 2U));
 
     //
     // Shift the sample window and threshold values into the correct positions
     // and write them to the appropriate register.
     //
     regValue = ((sampleWindow - 1U) << CMPSS_CTRIPLFILCTL_SAMPWIN_S) |
-               (threshold << CMPSS_CTRIPLFILCTL_THRESH_S);
+               ((threshold - 1U) << CMPSS_CTRIPLFILCTL_THRESH_S);
 
     EALLOW;
 

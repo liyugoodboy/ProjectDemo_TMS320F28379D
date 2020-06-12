@@ -5,10 +5,10 @@
 // TITLE:  C28x SCI driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -209,11 +209,15 @@ typedef enum
 //
 //*****************************************************************************
 #ifdef DEBUG
-static bool
+static inline bool
 SCI_isBaseValid(uint32_t base)
 {
-    return((base == SCIA_BASE) || (base == SCIB_BASE) ||
-           (base == SCIC_BASE) || (base == SCID_BASE));
+	return(
+           (base == SCIA_BASE) ||
+           (base == SCIB_BASE) ||
+           (base == SCIC_BASE) ||
+           (base == SCID_BASE)
+		  );
 }
 #endif
 
@@ -942,6 +946,38 @@ SCI_writeCharNonBlocking(uint32_t base, uint16_t data)
 
 //*****************************************************************************
 //
+//! Gets current receiver status flags.
+//!
+//! \param base is the base address of the SCI port.
+//!
+//! This function returns the current receiver status flags.  The returned
+//! error flags are equivalent to the error bits returned via the previous
+//! reading or receiving of a character with the exception that the overrun
+//! error is set immediately the overrun occurs rather than when a character
+//! is next read.
+//!
+//! \return Returns a bitwise OR combination of the receiver status flags,
+//! \b SCI_RXSTATUS_WAKE, \b SCI_RXSTATUS_PARITY, \b SCI_RXSTATUS_OVERRUN,
+//! \b SCI_RXSTATUS_FRAMING, \b SCI_RXSTATUS_BREAK, \b SCI_RXSTATUS_READY,
+//! and \b SCI_RXSTATUS_ERROR.
+//
+//*****************************************************************************
+static inline uint16_t
+SCI_getRxStatus(uint32_t base)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(SCI_isBaseValid(base));
+
+    //
+    // Return the current value of the receive status register.
+    //
+    return(HWREGH(base + SCI_O_RXST));
+}
+
+//*****************************************************************************
+//
 //! Waits for a character from the specified port when the FIFO enhancement
 //! is enabled.
 //!
@@ -949,9 +985,12 @@ SCI_writeCharNonBlocking(uint32_t base, uint16_t data)
 //!
 //! Gets a character from the receive FIFO for the specified port.  If there
 //! are no characters available, this function waits until a character is
-//! received before returning.
+//! received before returning. Returns immediately in case of Error.
 //!
-//! \return Returns the character read from the specified port as \e uint16_t.
+//! \return Returns the character read from the specified port as \e uint16_t
+//!         or 0x0 in case of Error. The application must use
+//!         SCI_getRxStatus() API to check if some error occurred before 
+//!         consuming the data
 //
 //*****************************************************************************
 static inline uint16_t
@@ -967,6 +1006,13 @@ SCI_readCharBlockingFIFO(uint32_t base)
     //
     while(SCI_getRxFIFOStatus(base) == SCI_FIFO_RX0)
     {
+        //
+        //If there is any error return
+        //
+        if((SCI_getRxStatus(base) & SCI_RXSTATUS_ERROR) != 0U)
+        {
+            return 0U;
+        }
     }
 
     //
@@ -1040,38 +1086,6 @@ SCI_readCharNonBlocking(uint32_t base)
     // Return the character from the receive buffer.
     //
     return(uint16_t)(HWREGH(base + SCI_O_RXBUF) & SCI_RXBUF_SAR_M);
-}
-
-//*****************************************************************************
-//
-//! Gets current receiver status flags.
-//!
-//! \param base is the base address of the SCI port.
-//!
-//! This function returns the current receiver status flags.  The returned
-//! error flags are equivalent to the error bits returned via the previous
-//! reading or receiving of a character with the exception that the overrun
-//! error is set immediately the overrun occurs rather than when a character
-//! is next read.
-//!
-//! \return Returns a bitwise OR combination of the receiver status flags,
-//! \b SCI_RXSTATUS_WAKE, \b SCI_RXSTATUS_PARITY, \b SCI_RXSTATUS_OVERRUN,
-//! \b SCI_RXSTATUS_FRAMING, \b SCI_RXSTATUS_BREAK, \b SCI_RXSTATUS_READY,
-//! and \b SCI_RXSTATUS_ERROR.
-//
-//*****************************************************************************
-static inline uint16_t
-SCI_getRxStatus(uint32_t base)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(SCI_isBaseValid(base));
-
-    //
-    // Return the current value of the receive status register.
-    //
-    return(HWREGH(base + SCI_O_RXST));
 }
 
 //*****************************************************************************

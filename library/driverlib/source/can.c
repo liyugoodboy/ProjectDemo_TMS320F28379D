@@ -5,10 +5,10 @@
 // TITLE:  C28x CAN driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -395,13 +395,14 @@ CAN_setupMessageObject(uint32_t base, uint32_t objID, uint32_t msgID,
     }
 
     //
-    // Set the data length since this is set for all transfers.  This is
-    // also a single transfer and not a FIFO transfer so set EOB bit.
+    // Set the data length for the transfers.
+    // This is applicable for Tx mailboxes.
     //
     msgCtrl |= ((uint32_t)msgLen & CAN_IF1MCTL_DLC_M);
 
     //
-    // Mark this as the last entry if this is not the last entry in a FIFO.
+    // If this is a single transfer or the last mailbox of a FIFO, set EOB bit.
+    // If this is not the last entry in a FIFO, leave the EOB bit as 0.
     //
     if((flags & CAN_MSG_OBJ_FIFO) == 0U)
     {
@@ -542,7 +543,8 @@ CAN_readMessage(uint32_t base, uint32_t objID,
     //
     HWREG_BP(base + CAN_O_IF2CMD) =
     ((uint32_t)CAN_IF2CMD_DATA_A | (uint32_t)CAN_IF2CMD_DATA_B |
-     (uint32_t)CAN_IF2CMD_CONTROL | (objID & CAN_IF2CMD_MSG_NUM_M));
+     (uint32_t)CAN_IF2CMD_CONTROL | (objID & CAN_IF2CMD_MSG_NUM_M) |
+	 (uint32_t)CAN_IF2CMD_ARB);
 
     //
     // Wait for busy bit to clear
@@ -591,6 +593,55 @@ CAN_readMessage(uint32_t base, uint32_t objID,
     return(status);
 }
 
+
+//*****************************************************************************
+//
+// CAN_transferMessage
+//
+//*****************************************************************************
+void
+CAN_transferMessage(uint32_t base, uint16_t interface, uint32_t objID,
+                    bool direction)
+{
+    uint32_t cmdMaskReg;
+
+    ASSERT(CAN_isBaseValid(base));
+    ASSERT((objID >= 1U) && (objID <= 32U));
+    ASSERT((interface == 1U) || (interface == 2U));
+
+    //
+    // This is always a read to the Message object as this call is setting a
+    // message object.
+    //
+    cmdMaskReg =
+    ((uint32_t)CAN_IF1CMD_DATA_A | (uint32_t)CAN_IF1CMD_DATA_B |
+     (uint32_t)CAN_IF1CMD_TXRQST | (uint32_t)CAN_IF1CMD_CONTROL |
+     (uint32_t)CAN_IF1CMD_MASK | (uint32_t)CAN_IF1CMD_ARB) |
+    (direction ? CAN_IF1CMD_DIR : 0U);
+
+    //
+    // Ensure this IF isn't busy
+    //
+    while((HWREGH(base + ((interface == 2U) ? CAN_O_IF2CMD : CAN_O_IF1CMD)) &
+          CAN_IF1CMD_BUSY) == CAN_IF1CMD_BUSY)
+    {
+    }
+
+    //
+    // Set up the request for data from the message object. Transfer the
+    // message object to the message object specified by objID.
+    //
+    HWREG_BP(base + ((interface == 2U) ? CAN_O_IF2CMD : CAN_O_IF1CMD)) =
+                                (cmdMaskReg | (objID & CAN_IF1CMD_MSG_NUM_M));
+
+    //
+    // Wait for busy bit to clear
+    //
+    while((HWREGH(base + ((interface == 2U) ? CAN_O_IF2CMD : CAN_O_IF1CMD)) &
+          CAN_IF1CMD_BUSY) == CAN_IF1CMD_BUSY)
+    {
+    }
+}
 
 //*****************************************************************************
 //

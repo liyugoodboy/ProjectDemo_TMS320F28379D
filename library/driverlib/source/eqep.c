@@ -5,10 +5,10 @@
 // TITLE:  C28x eQEP driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -67,7 +67,7 @@ EQEP_setCompareConfig(uint32_t base, uint16_t config, uint32_t compareValue,
     //
     // Set the shadow register settings and pulse width.
     //
-    regValue = (config & (uint16_t)(EQEP_QPOSCTL_PCSHDW | 
+    regValue = (config & (uint16_t)(EQEP_QPOSCTL_PCSHDW |
                   EQEP_QPOSCTL_PCLOAD)) | (cycles - 1U);
 
     HWREGH(base + EQEP_O_QPOSCTL) = (HWREGH(base + EQEP_O_QPOSCTL) &

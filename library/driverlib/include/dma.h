@@ -5,10 +5,10 @@
 // TITLE:  C28x DMA driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -179,6 +179,11 @@ typedef enum
     DMA_TRIGGER_SPIBRX       = 112,
     DMA_TRIGGER_SPICTX       = 113,
     DMA_TRIGGER_SPICRX       = 114,
+    DMA_TRIGGER_CLB1INT      = 127,
+    DMA_TRIGGER_CLB2INT      = 128,
+    DMA_TRIGGER_CLB3INT      = 129,
+    DMA_TRIGGER_CLB4INT      = 130,
+
 } DMA_Trigger;
 
 //*****************************************************************************

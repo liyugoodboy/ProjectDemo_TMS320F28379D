@@ -5,10 +5,10 @@
 // TITLE:  C28x driver for Analog System Control.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -118,6 +118,7 @@ ASysCtl_disableTemperatureSensor(void)
 
     EDIS;
 }
+
 //*****************************************************************************
 //
 //! Locks the temperature sensor control register.
@@ -136,6 +137,7 @@ static inline void ASysCtl_lockTemperatureSensor(void)
 
     EDIS;
 }
+
 //*****************************************************************************
 //
 // Close the Doxygen group.

@@ -5,10 +5,10 @@
 // TITLE:  C28x I2C driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -291,8 +291,10 @@ typedef enum
 static inline bool
 I2C_isBaseValid(uint32_t base)
 {
-    return((base == I2CA_BASE) || (base == I2CB_BASE));
-
+	return(
+           (base == I2CA_BASE) ||
+           (base == I2CB_BASE)
+		  );
 }
 #endif
 

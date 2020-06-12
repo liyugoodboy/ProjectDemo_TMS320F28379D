@@ -5,10 +5,10 @@
 // TITLE:   C28x HRPWM Driver
 //
 //#############################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -218,7 +218,6 @@ typedef enum
 // Functions APIs shared with ePWM module
 //
 //*****************************************************************************
-#define HRPWM_isBaseValid                        EPWM_isBaseValid
 
 //
 // Time Base Sub Module related APIs
@@ -499,11 +498,35 @@ typedef enum
 #define HRPWM_enableGlobalLoadRegisters       EPWM_enableGlobalLoadRegisters
 #define HRPWM_disableGlobalLoadRegisters      EPWM_disableGlobalLoadRegisters
 #define HRPWM_setEmulationMode                EPWM_setEmulationMode
+
 //*****************************************************************************
 //
 // Prototypes for the API.
 //
 //*****************************************************************************
+
+//*****************************************************************************
+//
+//! \internal
+//! Checks HRPWM base address.
+//!
+//! \param base specifies the HRPWM module base address.
+//!
+//! This function determines if an HRPWM module base address is valid.
+//!
+//! \return Returns \b true if the base address is valid and \b false
+//! otherwise.
+//
+//*****************************************************************************
+#ifdef DEBUG
+static inline bool HRPWM_isBaseValid(uint32_t base)
+{
+    return((base == EPWM1_BASE) || (base == EPWM2_BASE) ||
+           (base == EPWM3_BASE) || (base == EPWM4_BASE) ||
+           (base == EPWM5_BASE) || (base == EPWM6_BASE) ||
+           (base == EPWM7_BASE) || (base == EPWM8_BASE));
+}
+#endif
 //*****************************************************************************
 //
 //! Sets the consolidated phase shift value in high resolution mode.
@@ -511,8 +534,8 @@ typedef enum
 //! \param base is the base address of the EPWM module.
 //! \param phaseCount is the consolidated phase shift count value.
 //!
-//! This function sets the consolidated phase shift value i.e. both TBPHS and
-//! TBPHSHR values are configured together.
+//! This function sets the consolidated phase shift value, that is, both TBPHS
+//! and TBPHSHR values are configured together.
 //!
 //! Call EPWM_enablePhaseShiftLoad & HRPWM_enableHRPhaseShiftLoad() functions
 //! to enable loading of the phaseCount in high resolution mode.
@@ -656,7 +679,7 @@ HRPWM_getTimeBasePeriod(uint32_t base)
     //
     // Check the arguments
     //
-    ASSERT(EPWM_isBaseValid(base));
+    ASSERT(HRPWM_isBaseValid(base));
 
     //
     // Read from TBPRD:TBPRDHR bit
@@ -681,7 +704,7 @@ HRPWM_getHiResTimeBasePeriodOnly(uint32_t base)
     //
     // Check the arguments
     //
-    ASSERT(EPWM_isBaseValid(base));
+    ASSERT(HRPWM_isBaseValid(base));
 
     //
     // Read from TBPRDHR bit

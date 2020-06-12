@@ -5,10 +5,10 @@
 // TITLE:  C28x Interrupt (PIE) driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -53,6 +53,8 @@
 extern "C"
 {
 #endif
+
+#ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //
@@ -429,6 +431,39 @@ Interrupt_clearACKGroup(uint16_t group)
 
 //*****************************************************************************
 //
+//! Enables the PIE block.
+//!
+//! This function enables the vector fetching for the peripheral interrupts by
+//! enabling the PIE block.
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+Interrupt_enablePIE(void)
+{
+    HWREGH(PIECTRL_BASE + PIE_O_CTRL) |= PIE_CTRL_ENPIE;
+}
+
+//*****************************************************************************
+//
+//! Disables the PIE block.
+//!
+//! This function disables the vector fetching for the peripheral interrupts by
+//! disabling the PIE block. PIEACK, PIEIFR, and PIEIER registers can be
+//! accessed even when the PIE block is disabled.
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+Interrupt_disablePIE(void)
+{
+    HWREGH(PIECTRL_BASE + PIE_O_CTRL) &= ~PIE_CTRL_ENPIE;
+}
+
+//*****************************************************************************
+//
 //! Initializes the PIE control registers by setting them to a known state.
 //!
 //! This function initializes the PIE control registers. After globally
@@ -504,6 +539,8 @@ extern uint16_t __enable_interrupts(void);
 //! @}
 //
 //*****************************************************************************
+
+#endif // #ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //

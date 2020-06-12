@@ -5,10 +5,10 @@
 // TITLE:  C28x McBSP driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -79,13 +79,13 @@ extern "C"
 // McBSP_setTxDataSize() anf McBSP_setRxDataSize().
 //
 //*****************************************************************************
-#define MCBSP_XCR1_M            (MCBSP_XCR1_XWDLEN1_M |\
+#define MCBSP_XCR1_M            (MCBSP_XCR1_XWDLEN1_M |                       \
                                  MCBSP_XCR1_XFRLEN1_M)
-#define MCBSP_RCR1_M            (MCBSP_RCR1_RWDLEN1_M |\
+#define MCBSP_RCR1_M            (MCBSP_RCR1_RWDLEN1_M |                       \
                                  MCBSP_RCR1_RFRLEN1_M)
-#define MCBSP_XCR2_M            (MCBSP_XCR2_XWDLEN2_M |\
+#define MCBSP_XCR2_M            (MCBSP_XCR2_XWDLEN2_M |                       \
                                  MCBSP_XCR2_XFRLEN2_M)
-#define MCBSP_RCR2_M            (MCBSP_RCR2_RWDLEN2_M |\
+#define MCBSP_RCR2_M            (MCBSP_RCR2_RWDLEN2_M |                       \
                                  MCBSP_RCR2_RFRLEN2_M)
 
 //*****************************************************************************
@@ -642,10 +642,13 @@ McBSP_SPISlaveModeParams;
 //
 //*****************************************************************************
 #ifdef DEBUG
-static bool
+static inline bool
 McBSP_isBaseValid(uint32_t base)
 {
-    return((base == MCBSPA_BASE) || (base == MCBSPB_BASE));
+	return(
+           (base == MCBSPA_BASE) ||
+           (base == MCBSPB_BASE)
+		  );
 }
 #endif
 

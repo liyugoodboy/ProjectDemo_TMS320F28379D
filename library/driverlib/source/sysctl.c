@@ -5,10 +5,10 @@
 // TITLE:  C28x system control driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -54,7 +54,7 @@
                                   " .global  _SysCtl_delay\n"                  \
                                   "_SysCtl_delay:\n"                           \
                                   " SUB    ACC,#1\n"                           \
-                                  " BF     _SysCtl_delay,GEQ\n"                \
+                                  " BF     _SysCtl_delay, GEQ\n"               \
                                   " LRETR\n")
 #define SYSCTL_CLRC_DBGM    __asm(" CLRC DBGM")
 
@@ -63,6 +63,14 @@
 //
 #define TMR1SYSCLKCTR       0xF0000000U
 #define TMR2INPCLKCTR       0x800U
+
+
+//
+// Macro used for adding delay between 2 consecutive writes to CLKSRCCTL1
+// register.
+// Delay = 300 NOPs
+//
+#define SYSCTL_CLKSRCCTL1_DELAY  asm(" RPT #250 || NOP \n RPT #50 || NOP")
 
 //*****************************************************************************
 //
@@ -123,15 +131,15 @@ SysCtl_getClock(uint32_t clockInHz)
             // Calculate portion from fractional multiplier
             //
             temp = (clockInHz * ((HWREG(CLKCFG_BASE + SYSCTL_O_SYSPLLMULT) &
-                    SYSCTL_SYSPLLMULT_FMULT_M) >>
-                    SYSCTL_SYSPLLMULT_FMULT_S)) / 4U;
+                                  SYSCTL_SYSPLLMULT_FMULT_M) >>
+                                 SYSCTL_SYSPLLMULT_FMULT_S)) / 4U;
 
             //
             // Calculate integer multiplier and fixed divide by 2
             //
             clockOut = clockOut * ((HWREG(CLKCFG_BASE + SYSCTL_O_SYSPLLMULT) &
-                                      SYSCTL_SYSPLLMULT_IMULT_M) >>
-                                     SYSCTL_SYSPLLMULT_IMULT_S);
+                                    SYSCTL_SYSPLLMULT_IMULT_M) >>
+                                   SYSCTL_SYSPLLMULT_IMULT_S);
 
             //
             // Add in fractional portion
@@ -140,10 +148,10 @@ SysCtl_getClock(uint32_t clockInHz)
         }
 
         if((HWREG(CLKCFG_BASE + SYSCTL_O_SYSCLKDIVSEL) &
-           SYSCTL_SYSCLKDIVSEL_PLLSYSCLKDIV_M) != 0U)
+            SYSCTL_SYSCLKDIVSEL_PLLSYSCLKDIV_M) != 0U)
         {
             clockOut /= (2U * (HWREG(CLKCFG_BASE + SYSCTL_O_SYSCLKDIVSEL) &
-                                SYSCTL_SYSCLKDIVSEL_PLLSYSCLKDIV_M));
+                               SYSCTL_SYSCLKDIVSEL_PLLSYSCLKDIV_M));
         }
     }
 
@@ -162,7 +170,7 @@ uint32_t SysCtl_getAuxClock(uint32_t clockInHz)
     uint32_t clockOut;
 
     oscSource = HWREG(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &
-            (uint32_t)SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M;
+                (uint32_t)SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M;
 
     //
     // If one of the internal oscillators is being used, start from the
@@ -190,14 +198,15 @@ uint32_t SysCtl_getAuxClock(uint32_t clockInHz)
         // Calculate portion from fractional multiplier
         //
         temp = (clockInHz * ((HWREG(CLKCFG_BASE + SYSCTL_O_AUXPLLMULT) &
-                SYSCTL_AUXPLLMULT_FMULT_M) >> SYSCTL_AUXPLLMULT_FMULT_S)) / 4U;
+                              SYSCTL_AUXPLLMULT_FMULT_M) >>
+                             SYSCTL_AUXPLLMULT_FMULT_S)) / 4U;
 
         //
         // Calculate integer multiplier
         //
         clockOut = clockOut * ((HWREG(CLKCFG_BASE + SYSCTL_O_AUXPLLMULT) &
-                                  SYSCTL_AUXPLLMULT_IMULT_M) >>
-                                  SYSCTL_AUXPLLMULT_IMULT_S);
+                                SYSCTL_AUXPLLMULT_IMULT_M) >>
+                               SYSCTL_AUXPLLMULT_IMULT_S);
 
         //
         // Add in fractional portion
@@ -436,7 +445,7 @@ SysCtl_setClock(uint32_t config)
                 //
                 // Delay of at least 120 OSCCLK cycles required post PLL bypass
                 //
-                SysCtl_delay(23U);                
+                SysCtl_delay(23U);
 
                 //
                 // Turn off PLL
@@ -728,7 +737,8 @@ void SysCtl_setAuxClock(uint32_t config)
     //
     EALLOW;
     HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) &= ~SYSCTL_AUXPLLCTL1_PLLCLKEN;
-    
+    EDIS;
+
     //
     // Delay of at least 120 OSCCLK cycles required post PLL bypass
     //
@@ -737,55 +747,7 @@ void SysCtl_setAuxClock(uint32_t config)
     //
     // Configure oscillator source
     //
-    switch (config & SYSCTL_OSCSRC_M)
-    {
-        case SYSCTL_AUXPLL_OSCSRC_OSC2:
-            //
-            // Turn on INTOSC2
-            //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
-                    ~(SYSCTL_CLKSRCCTL1_INTOSC2OFF);
-
-            //
-            // Clk Src = INTOSC2
-            //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &=
-                    ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M);
-            break;
-
-        case SYSCTL_AUXPLL_OSCSRC_XTAL:
-            //
-            // Turn on XTALOSC
-            //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
-                   ~(SYSCTL_CLKSRCCTL1_XTALOFF);
-
-            //
-            // Clk Src = XTAL
-            //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &=
-                    ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M);
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) |=
-                    1U << SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_S;
-            break;
-
-        case SYSCTL_AUXPLL_OSCSRC_AUXCLKIN:
-            //
-            // Clk Src = AUXCLKIN
-            //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &=
-                    ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M);
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) |=
-                    (2U << SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_S) &
-                    SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M;
-            break;
-        default:
-            //
-            // Do nothing. Not a valid clock source value.
-            //
-            break;
-    }
-    EDIS;
+    SysCtl_selectOscSourceAuxPLL(config & SYSCTL_OSCSRC_M);
 
     //
     // Get the PLL multiplier settings from config
@@ -799,8 +761,8 @@ void SysCtl_setAuxClock(uint32_t config)
     // Get the PLL multipliers currently programmed
     //
     mult  = (uint16_t)((HWREG(CLKCFG_BASE + SYSCTL_O_AUXPLLMULT) &
-                               (uint32_t)SYSCTL_AUXPLLMULT_IMULT_M) >>
-                               (uint32_t)SYSCTL_AUXPLLMULT_IMULT_S);
+                        (uint32_t)SYSCTL_AUXPLLMULT_IMULT_M) >>
+                       (uint32_t)SYSCTL_AUXPLLMULT_IMULT_S);
     mult |= (uint16_t)(HWREG(CLKCFG_BASE + SYSCTL_O_AUXPLLMULT) &
                              SYSCTL_AUXPLLMULT_FMULT_M);
 
@@ -882,7 +844,7 @@ void SysCtl_setAuxClock(uint32_t config)
                 //
 
                 while((HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLSTS) &
-                    SYSCTL_AUXPLLSTS_LOCKS) != 1U)
+                       SYSCTL_AUXPLLSTS_LOCKS) != 1U)
                 {
                     //
                     // Consider to servicing the watchdog using
@@ -923,7 +885,7 @@ void SysCtl_setAuxClock(uint32_t config)
                         // Clear overflow flag
                         //
                         HWREGH(CPUTIMER2_BASE +
-                            CPUTIMER_O_TCR) |= CPUTIMER_TCR_TIF;
+                               CPUTIMER_O_TCR) |= CPUTIMER_TCR_TIF;
 
                         //
                         // Set flag to indicate PLL started and break out of
@@ -982,8 +944,7 @@ void SysCtl_setAuxClock(uint32_t config)
         // Enable AUXPLLCLK to be fed from AUXPLL
         //
         EALLOW;
-        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |=
-               SYSCTL_AUXPLLCTL1_PLLCLKEN;
+        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |= SYSCTL_AUXPLLCTL1_PLLCLKEN;
         SysCtl_delay(3U);
         EDIS;
     }
@@ -1003,7 +964,7 @@ void SysCtl_setAuxClock(uint32_t config)
         //
         HWREGH(CLKCFG_BASE +
                SYSCTL_O_AUXPLLCTL1) &= ~SYSCTL_AUXPLLCTL1_PLLCLKEN;
-        
+
         //
         // Delay of at least 120 OSCCLK cycles required post PLL bypass
         //
@@ -1012,8 +973,7 @@ void SysCtl_setAuxClock(uint32_t config)
         //
         // Turn off AUXPLL
         //
-        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) &=
-            ~SYSCTL_AUXPLLCTL1_PLLEN;
+        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) &= ~SYSCTL_AUXPLLCTL1_PLLEN;
         SysCtl_delay(3U);
 
         //
@@ -1025,8 +985,7 @@ void SysCtl_setAuxClock(uint32_t config)
         //
         // Enable AUXPLL
         //
-        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |=
-            SYSCTL_AUXPLLCTL1_PLLEN;
+        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |= SYSCTL_AUXPLLCTL1_PLLEN;
 
         //
         // Wait for the AUXPLL lock counter
@@ -1043,8 +1002,7 @@ void SysCtl_setAuxClock(uint32_t config)
         //
         // Enable AUXPLLCLK to be fed from AUXPLL
         //
-        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |=
-            SYSCTL_AUXPLLCTL1_PLLCLKEN;
+        HWREGH(CLKCFG_BASE + SYSCTL_O_AUXPLLCTL1) |= SYSCTL_AUXPLLCTL1_PLLCLKEN;
 
         SysCtl_delay(3U);
 
@@ -1088,52 +1046,125 @@ SysCtl_selectOscSource(uint32_t oscSource)
             HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
                 ~SYSCTL_CLKSRCCTL1_INTOSC2OFF;
 
+            SYSCTL_CLKSRCCTL1_DELAY;
+
             //
             // Clk Src = INTOSC2
             //
             HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
                 ~SYSCTL_CLKSRCCTL1_OSCCLKSRCSEL_M;
+
+            SYSCTL_CLKSRCCTL1_DELAY;
+
             //
-            //Turn off XTALOSC
+            // Turn off XTALOSC
             //
             HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) |=
                 SYSCTL_CLKSRCCTL1_XTALOFF;
+
             break;
 
         case SYSCTL_OSCSRC_XTAL:
             //
-            //Turn on XTALOSC
+            // Turn on XTALOSC
             //
             HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
                 ~SYSCTL_CLKSRCCTL1_XTALOFF;
 
+            SYSCTL_CLKSRCCTL1_DELAY;
+
             //
             // Clk Src = XTALOSC
             //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
-                ~SYSCTL_CLKSRCCTL1_OSCCLKSRCSEL_M;
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) |=
-                ((uint32_t)SYSCTL_OSCSRC_XTAL >> SYSCTL_OSCSRC_S);
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) =
+                   (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &
+                    ~SYSCTL_CLKSRCCTL1_OSCCLKSRCSEL_M) |
+                   ((uint32_t)SYSCTL_OSCSRC_XTAL >> SYSCTL_OSCSRC_S);
             break;
 
         case SYSCTL_OSCSRC_OSC1:
             //
             // Clk Src = INTOSC1
             //
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
-                ~SYSCTL_CLKSRCCTL1_OSCCLKSRCSEL_M;
-            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) |=
-                ((uint32_t)SYSCTL_OSCSRC_OSC1 >> SYSCTL_OSCSRC_S);
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) =
+                   (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &
+                    ~SYSCTL_CLKSRCCTL1_OSCCLKSRCSEL_M) |
+                   ((uint32_t)SYSCTL_OSCSRC_OSC1 >> SYSCTL_OSCSRC_S);
+
+            SYSCTL_CLKSRCCTL1_DELAY;
+
             //
             //Turn off XTALOSC
             //
             HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) |=
                 SYSCTL_CLKSRCCTL1_XTALOFF;
+
             break;
 
         default:
             //
             // Do nothing. Not a valid oscSource value.
+            //
+            break;
+    }
+    EDIS;
+}
+
+//*****************************************************************************
+//
+// SysCtl_selectOscSourceAuxPLL()
+//
+//*****************************************************************************
+void
+SysCtl_selectOscSourceAuxPLL(uint32_t oscSource)
+{
+    EALLOW;
+
+    switch(oscSource)
+    {
+        case SYSCTL_AUXPLL_OSCSRC_OSC2:
+            //
+            // Turn on INTOSC2
+            //
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
+                    ~(SYSCTL_CLKSRCCTL1_INTOSC2OFF);
+
+            //
+            // Clk Src = INTOSC2
+            //
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &=
+                    ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M);
+            break;
+
+        case SYSCTL_AUXPLL_OSCSRC_XTAL:
+            //
+            // Turn on XTALOSC
+            //
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL1) &=
+                   ~(SYSCTL_CLKSRCCTL1_XTALOFF);
+
+            //
+            // Clk Src = XTAL
+            //
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) =
+                    (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &
+                     ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M)) |
+                    (1U << SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_S);
+            break;
+
+        case SYSCTL_AUXPLL_OSCSRC_AUXCLKIN:
+            //
+            // Clk Src = AUXCLKIN
+            //
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) =
+                    (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &
+                     ~(SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_M)) |
+                    (2U << SYSCTL_CLKSRCCTL2_AUXOSCCLKSRCSEL_S);
+            break;
+
+        default:
+            //
+            // Do nothing. Not a valid clock source value.
             //
             break;
     }
@@ -1188,8 +1219,7 @@ SysCtl_getDeviceParametric(SysCtl_DeviceParametric parametric)
             // Qualification Status
             //
             value = ((HWREG(DEVCFG_BASE + SYSCTL_O_PARTIDL) &
-                                SYSCTL_PARTIDL_QUAL_M) >>
-                               SYSCTL_PARTIDL_QUAL_S);
+                      SYSCTL_PARTIDL_QUAL_M) >> SYSCTL_PARTIDL_QUAL_S);
             break;
 
         case SYSCTL_DEVICE_PINCOUNT:

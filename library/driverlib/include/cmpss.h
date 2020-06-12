@@ -5,10 +5,10 @@
 // TITLE:  C28x CMPSS driver.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -202,10 +202,16 @@ extern "C"
 static inline bool
 CMPSS_isBaseValid(uint32_t base)
 {
-    return((base == CMPSS1_BASE) || (base == CMPSS2_BASE) ||
-           (base == CMPSS3_BASE) || (base == CMPSS4_BASE) ||
-           (base == CMPSS5_BASE) || (base == CMPSS6_BASE) ||
-           (base == CMPSS7_BASE) || (base == CMPSS8_BASE));
+	return(
+           (base == CMPSS1_BASE) ||
+           (base == CMPSS2_BASE) ||
+           (base == CMPSS3_BASE) ||
+           (base == CMPSS4_BASE) ||
+           (base == CMPSS5_BASE) ||
+           (base == CMPSS6_BASE) ||
+           (base == CMPSS7_BASE) ||
+           (base == CMPSS8_BASE)
+		  );
 }
 #endif
 
@@ -996,8 +1002,8 @@ CMPSS_setHysteresis(uint32_t base, uint16_t value)
 //! change the filter output. This sample window may be no larger than 32
 //! samples.
 //!
-//! The threshold used by digital filter is 1 more than \e threshold parameter
-//! value. So, the input provided should be 1 less than the expected threshold.
+//! The \e threshold parameter configures the threshold value to be used by
+//! the digital filter.
 //!
 //! The filter output resolves to the majority value of the sample window where
 //! majority is defined by the value passed into the \e threshold parameter.
@@ -1044,8 +1050,8 @@ CMPSS_configFilterHigh(uint32_t base, uint16_t samplePrescale,
 //! change the filter output. This sample window may be no larger than 32
 //! samples.
 //!
-//! The threshold used by digital filter is 1 more than \e threshold parameter
-//! value. So, the input provided should be 1 less than the expected threshold.
+//! The \e threshold parameter configures the threshold value to be used by
+//! the digital filter.
 //!
 //! The filter output resolves to the majority value of the sample window where
 //! majority is defined by the value passed into the \e threshold parameter.

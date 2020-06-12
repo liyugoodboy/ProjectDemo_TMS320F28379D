@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the DAC registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -72,7 +72,7 @@
 #define DAC_CTL_DACREFSEL         0x1U         // DAC Reference Select
 #define DAC_CTL_LOADMODE          0x4U         // DACVALA Load Mode
 #define DAC_CTL_SYNCSEL_S         4U
-#define DAC_CTL_SYNCSEL_M         0xF0U        // DAC PWMSYNC Select
+#define DAC_CTL_SYNCSEL_M         0xF0U        // DAC EPWMSYNCPER Select
 
 //*****************************************************************************
 //
@@ -106,6 +106,8 @@
 #define DAC_LOCK_DACVAL           0x2U         // DAC Value Register Lock
 #define DAC_LOCK_DACOUTEN         0x4U         // DAC Output Enable Register
                                                // Lock
+#define DAC_LOCK_KEY_S            12U
+#define DAC_LOCK_KEY_M            0xF000U      // DAC Register Lock Key
 
 //*****************************************************************************
 //

@@ -217,7 +217,7 @@ typedef _Bool status_t;
 //
 #ifndef DSP28_DATA_TYPES
 #define DSP28_DATA_TYPES
-typedef unsigned            uint8_t;
+//typedef unsigned            uint8_t;
 typedef char                int8_t;
 typedef char                int8;
 typedef unsigned char       Uint8;

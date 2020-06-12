@@ -5,10 +5,10 @@
 // TITLE:   Definitions for the CMPSS registers.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v3.06.00.00 $
-// $Release Date: Mon May 27 06:48:24 CDT 2019 $
+// $TI Release: F2837xD Support Library v3.09.00.00 $
+// $Release Date: Thu Mar 19 07:35:24 IST 2020 $
 // $Copyright:
-// Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com/
+// Copyright (C) 2013-2020 Texas Instruments Incorporated - http://www.ti.com/
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions 
@@ -139,12 +139,12 @@
 //*****************************************************************************
 #define CMPSS_COMPSTSCLR_HLATCHCLR  0x2U         // High Comparator Latched
                                                // Status Clear
-#define CMPSS_COMPSTSCLR_HSYNCCLREN  0x4U         // High Comparator PWMSYNC Clear
-                                               // Enable
+#define CMPSS_COMPSTSCLR_HSYNCCLREN  0x4U         // High Comparator EPWMSYNCPER
+                                               // Clear Enable
 #define CMPSS_COMPSTSCLR_LLATCHCLR  0x200U       // Low Comparator Latched Status
                                                // Clear
-#define CMPSS_COMPSTSCLR_LSYNCCLREN  0x400U       // Low Comparator PWMSYNC Clear
-                                               // Enable
+#define CMPSS_COMPSTSCLR_LSYNCCLREN  0x400U       // Low Comparator EPWMSYNCPER
+                                               // Clear Enable
 
 //*****************************************************************************
 //
