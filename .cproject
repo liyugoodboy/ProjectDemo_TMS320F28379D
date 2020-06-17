@@ -50,6 +50,7 @@
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/library/flash_api_lib/include"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/device"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}"/>
+									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/user/mcu/clb"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.C2000_18.1.compilerID.DEFINE.1488207436" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.C2000_18.1.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="${COM_TI_C2000WARE_SOFTWARE_PACKAGE_SYMBOLS}"/>
